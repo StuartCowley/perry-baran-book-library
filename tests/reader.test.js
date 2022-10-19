@@ -38,7 +38,7 @@ describe('/readers', () => {
 
           expect(response.status).to.equal(500);
           expect(response.body.error[0]).to.equal('Reader.name cannot be null');
-        });  
+        });
       });
       
       describe('email', () => {

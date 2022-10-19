@@ -32,6 +32,28 @@ describe('/books', () => {
         expect(newBookRecord.genre).to.equal(data.genre);
         expect(newBookRecord.ISBN).to.equal(data.ISBN);
       });
+
+      it('contain a title', async () => {
+        const response = await request(app).post('/books').send({
+          author: 'Author Man',
+          genre: 'Spooky',
+          ISBN: '978-3-16-148410-0'
+        });
+
+        expect(response.status).to.equal(500);
+        expect(response.body.error[0]).to.equal('Book.title cannot be null');
+      });
+
+      it('contain an author', async () => {
+        const response = await request(app).post('/books').send({
+          title: 'title',
+          genre: 'Spooky',
+          ISBN: '978-3-16-148410-0'
+        });
+
+        expect(response.status).to.equal(500);
+        expect(response.body.error[0]).to.equal('Book.author cannot be null');
+      });
     });
   });
 

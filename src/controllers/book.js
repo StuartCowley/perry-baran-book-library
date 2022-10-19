@@ -8,7 +8,7 @@ exports.create = async (req, res) => {
     const newBook = await Book.create(data);
     res.status(201).json(newBook);
   } catch (err) {
-    res.status(500).json({ error: err });
+    res.status(500).json({ error: err.errors.map((e) => e.message) });
   };
 };
 
@@ -17,7 +17,7 @@ exports.readAll = async (_, res) => {
     const books = await Book.findAll();
     res.status(200).json(books);
   } catch (err) {
-    res.status(500).json({ error: err });
+    res.status(500).json({ error: err.errors.map((e) => e.message) });
   };
 };
 
@@ -33,7 +33,7 @@ exports.readById = async (req, res) => {
       res.status(200).json(book);
     };
   } catch (err) {
-    res.status(500).json({ error: err });
+    res.status(500).json({ error: err.errors.map((e) => e.message) });
   };
 };
 
@@ -50,7 +50,7 @@ exports.update = async (req, res) => {
       res.status(200).send();
     };
   } catch (err) {
-    res.status(500).json({ error: err });
+    res.status(500).json({ error: err.errors.map((e) => e.message) });
   };
 };
 
@@ -65,6 +65,6 @@ exports.delete = async (req, res) => {
       res.status(204).send();
     };
   } catch (err) {
-    res.status(500).json({ error: err });
+    res.status(500).json({ error: err.errors.map((e) => e.message) });
   }
 }
