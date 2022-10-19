@@ -1,12 +1,12 @@
 const Sequelize = require('sequelize');
-const { Reader } = require('../models');
+const { Book } = require('../models');
 
 exports.create = async (req, res) => {
   const data = req.body;
   
   try {
-    const newReader = await Reader.create(data);
-    res.status(201).json(newReader);
+    const newBook = await Book.create(data);
+    res.status(201).json(newBook);
   } catch (err) {
     res.status(500).json({ error: err });
   };
@@ -14,23 +14,23 @@ exports.create = async (req, res) => {
 
 exports.readAll = async (_, res) => {
   try {
-    const readers = await Reader.findAll();
-    res.status(200).json(readers);
+    const books = await Book.findAll();
+    res.status(200).json(books);
   } catch (err) {
     res.status(500).json({ error: err });
   };
 };
 
 exports.readById = async (req, res) => {
-  const { readerId } = req.params;
+  const { bookId } = req.params;
   
   try {
-    const reader = await Reader.findByPk(readerId);
+    const book = await Book.findByPk(bookId);
 
-    if (!reader) {
-      res.status(404).json({ error: 'The reader could not be found.' });
+    if (!book) {
+      res.status(404).json({ error: 'The book could not be found.' });
     } else {
-      res.status(200).json(reader);
+      res.status(200).json(book);
     };
   } catch (err) {
     res.status(500).json({ error: err });
@@ -38,14 +38,14 @@ exports.readById = async (req, res) => {
 };
 
 exports.update = async (req, res) => {
-  const { readerId } = req.params;
+  const { bookId } = req.params;
   const data = req.body
 
   try {
-    const [ updatedRows ] = await Reader.update(data, { where: { id: readerId } });
+    const [ updatedRows ] = await Book.update(data, { where: { id: bookId } });
 
     if (!updatedRows) {
-      res.status(404).json({ error: 'The reader could not be found.' })
+      res.status(404).json({ error: 'The book could not be found.' })
     } else {
       res.status(200).send();
     };
@@ -55,12 +55,12 @@ exports.update = async (req, res) => {
 };
 
 exports.delete = async (req, res) => {
-  const { readerId } = req.params;
+  const { bookId } = req.params;
 
   try {
-    const deletedRows = await Reader.destroy({where: {id: readerId } });
+    const deletedRows = await Book.destroy({where: {id: bookId } });
     if (!deletedRows) {
-      res.status(404).json({ error: 'The reader could not be found.' })
+      res.status(404).json({ error: 'The book could not be found.' })
     } else {
       res.status(204).send();
     };
