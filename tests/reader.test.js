@@ -28,6 +28,64 @@ describe('/readers', () => {
         expect(newReaderRecord.email).to.equal('future_ms_darcy@gmail.com');
         expect(newReaderRecord.password).to.equal('password');
       });
+
+      describe('name', () => {
+        it('must contain a name', async () => {
+          const response = await request(app).post('/readers').send({
+            email: 'future_ms_darcy@gmail.com',
+            password: 'password'
+          });
+
+          expect(response.status).to.equal(500);
+          expect(response.body.error[0]).to.equal('Reader.name cannot be null');
+        });  
+      });
+      
+      describe('email', () => {
+        it('must contain an email', async () => {
+          const response = await request(app).post('/readers').send({
+            name: 'Elizabeth Bennet',
+            password: 'password'
+          });
+
+          expect(response.status).to.equal(500);
+          expect(response.body.error[0]).to.equal('Reader.email cannot be null')
+        });
+
+        it('email must be valid format', async () => {
+          const response = await request(app).post('/readers').send({
+            name: 'Elizabeth Bennet',
+            email: 'future_ms_darcy',
+            password: 'password'
+          });
+
+          expect(response.status).to.equal(500);
+          expect(response.body.error[0]).to.equal('Validation isEmail on email failed')
+        });
+      });
+
+      describe('password', () => {
+        it('must contain a password', async () => {
+          const response = await request(app).post('/readers').send({
+            name: 'Elizabeth Bennet',
+            email: 'future_ms_darcy@gmail.com'
+          });
+
+          expect(response.status).to.equal(500);
+          expect(response.body.error[0]).to.equal('Reader.password cannot be null')
+        });
+
+        it('password must atleast 8 characters long', async () => {
+          const response = await request(app).post('/readers').send({
+            name: 'Elizabeth Bennet',
+            email: 'future_ms_darcy@gmail.com',
+            password: 'passwor'
+          });
+
+          expect(response.status).to.equal(500);
+          expect(response.body.error[0]).to.equal('Validation len on password failed')
+        });
+      });
     });
   });
 
