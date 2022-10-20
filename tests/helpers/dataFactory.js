@@ -5,7 +5,7 @@ exports.readerFactory = (data = {}) => {
 
   return {
     name: name || faker.lorem.word(),
-    email: email || faker.internet.email(),
+    email: email || faker.helpers.unique(faker.internet.email),
     password: password || faker.internet.password(8)
   };
 };
@@ -18,5 +18,17 @@ exports.bookFactory = (data = {}) => {
     author: author || faker.lorem.word(),
     genre: genre || faker.lorem.word(),
     ISBN: ISBN || faker.random.numeric(13)
+  };
+};
+
+exports.authorFactory = (author) => {
+  return {
+    author: author || faker.helpers.unique(faker.lorem.word)
+  };
+};
+
+exports.genreFactory = (genre) => {
+  return {
+    genre: genre || faker.helpers.unique(faker.lorem.word)
   };
 };

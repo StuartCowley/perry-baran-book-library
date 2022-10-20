@@ -1,5 +1,3 @@
-const Sequelize = require('sequelize');
-const { Reader } = require('../models');
 const helpers = require('./helpers');
 
 exports.create = async (req, res) => {

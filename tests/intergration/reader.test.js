@@ -36,7 +36,20 @@ describe('/readers', () => {
           const response = await appPost('/readers', data);
 
           expect(response.status).to.equal(500);
-          expect(response.body.error[0]).to.equal('Reader.name cannot be null');
+          expect(response.body.error[0]).to.equal('Must provide a name');
+        });
+
+        it('name must not be empty', async () => {
+          const data = {
+            name: '',
+            email: 'future_ms_darcy@gmail.com',
+            password: 'password'
+          };
+
+          const response = await appPost('/readers', data);
+
+          expect(response.status).to.equal(500);
+          expect(response.body.error[0]).to.equal('The name cannot be empty');
         });
       });
       
@@ -50,15 +63,25 @@ describe('/readers', () => {
           const response = await appPost('/readers', data);
 
           expect(response.status).to.equal(500);
-          expect(response.body.error[0]).to.equal('Reader.email cannot be null')
+          expect(response.body.error[0]).to.equal('Must provide an email');
         });
 
         it('email must be valid format', async () => {
-          const data = readerFactory({email: 'fake'})
+          const data = readerFactory({ email: 'fake' })
           const response = await appPost('/readers', data);
 
           expect(response.status).to.equal(500);
-          expect(response.body.error[0]).to.equal('Validation isEmail on email failed')
+          expect(response.body.error[0]).to.equal('Email must be valid');
+        });
+
+        it('email must be unique', async () => {
+          const data = readerFactory({ email: 'valid@email.com' });
+
+          await appPost('/readers', data);
+          const response = await appPost('/readers', data);
+          
+          expect(response.status).to.equal(500);
+          expect(response.body.error[0]).to.equal('This email is already in use');
         });
       });
 
@@ -72,7 +95,7 @@ describe('/readers', () => {
           const response = await appPost('/readers', data);
 
           expect(response.status).to.equal(500);
-          expect(response.body.error[0]).to.equal('Reader.password cannot be null')
+          expect(response.body.error[0]).to.equal('Must provide a password')
         });
 
         it('password must atleast 8 characters long', async () => {
@@ -80,7 +103,7 @@ describe('/readers', () => {
           const response = await appPost('/readers', data);
 
           expect(response.status).to.equal(500);
-          expect(response.body.error[0]).to.equal('Validation len on password failed')
+          expect(response.body.error[0]).to.equal('Password must be atleast 8 characters')
         });
       });
     });

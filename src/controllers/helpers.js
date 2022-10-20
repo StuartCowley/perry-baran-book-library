@@ -1,10 +1,11 @@
-const Sequelize = require('sequelize');
-const { Book, Reader } = require('../models');
+const { Book, Reader, Author, Genre } = require('../models');
 
 const getModel = (model) => {
   const models = {
     book: Book,
-    reader: Reader
+    reader: Reader,
+    author: Author,
+    genre: Genre
   };
 
   return models[model];
@@ -15,9 +16,9 @@ exports.create = async (data, res, model) => {
 
   try {
     const response = await Model.create(data);
-    return res.status(201).json(response);
+    res.status(201).json(response);
   } catch (err) {
-    return res.status(500).json({ error: err.errors.map((e) => e.message) });
+    res.status(500).json({ error: err.errors.map((e) => e.message) });
   };
 };
 

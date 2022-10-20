@@ -28,17 +28,33 @@ describe('/books', () => {
         expect(newBookRecord.ISBN).to.equal(data.ISBN);
       });
 
-      it('contain a title', async () => {
-        const data = {
-          author: 'Author Man',
-          genre: 'Spooky',
-          ISBN: '978-3-16-148410-0'
-        };
+      describe('title', () => {
+        it('must contain a title', async () => {
+          const data = {
+            author: 'Author Man',
+            genre: 'Spooky',
+            ISBN: '978-3-16-148410-0'
+          };
 
-        const response = await appPost('/books', data);
+          const response = await appPost('/books', data);
 
-        expect(response.status).to.equal(500);
-        expect(response.body.error[0]).to.equal('Book.title cannot be null');
+          expect(response.status).to.equal(500);
+          expect(response.body.error[0]).to.equal('Must provide a book title');
+        });
+
+        it('title cannor be empty', async () => {
+          const data = {
+            title: '',
+            author: 'Author Man',
+            genre: 'Spooky',
+            ISBN: '978-3-16-148410-0'
+          };
+
+          const response = await appPost('/books', data);
+
+          expect(response.status).to.equal(500);
+          expect(response.body.error[0]).to.equal('The book title cannot be empty');
+        });
       });
 
       it('contain an author', async () => {
@@ -50,7 +66,7 @@ describe('/books', () => {
         const response = await appPost('/books', data);
 
         expect(response.status).to.equal(500);
-        expect(response.body.error[0]).to.equal('Book.author cannot be null');
+        expect(response.body.error[0]).to.equal('Must provide an author');
       });
     });
   });
@@ -105,7 +121,7 @@ describe('/books', () => {
     });
 
     describe('PATCH /books/:id', () => {
-      it('updates books email by id', async () => {
+      it('updates books by id', async () => {
         const book = books[0];
         
         const data = { author: 'Arthur' };
