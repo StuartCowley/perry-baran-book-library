@@ -5,10 +5,10 @@ const getModel = (model) => {
   const models = {
     book: Book,
     reader: Reader
-  }
+  };
 
   return models[model];
-}
+};
 
 exports.create = async (data, res, model) => {
   const Model = getModel(model);
@@ -25,8 +25,9 @@ exports.readAll = async (res, model) => {
   const Model = getModel(model);
 
   try {
-    const reponse = await Model.findAll();
-    res.status(200).json(reponse);
+    const response = await Model.findAll();
+
+    res.status(200).json(response);
   } catch (err) {
     res.status(500).json({ error: err.errors.map((e) => e.message) });
   };

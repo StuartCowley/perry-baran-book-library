@@ -17,9 +17,15 @@ module.exports = (connection, DataTypes) => {
       validate: {
         len: [8]
       }
-    }
+    },
   };
 
-  const ReaderModel = connection.define('Reader', schema);
+  const scope = {
+    defaultScope: {
+      attributes: { exclude: ['password'] },
+    }
+  }
+
+  const ReaderModel = connection.define('Reader', schema, scope);
   return ReaderModel;
 };
