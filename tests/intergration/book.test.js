@@ -1,7 +1,7 @@
 const { expect } = require('chai');
-const request = require('supertest');
 const { Book } = require('../../src/models');
-const app = require('../../src/app');
+const { bookFactory } = require('../helpers/dataFactory');
+const { appPost, appGet, appPatch, appDelete } = require('../helpers/requestHelpers');
 
 describe('/books', () => {
   before(async () => Book.sequelize.sync());
@@ -13,14 +13,9 @@ describe('/books', () => {
   describe('with no records in the database', () => {
     describe('POST /books', () => {
       it('creates a new book in the database', async () => {
-        const data = {
-          title: 'Book Title',
-          author: 'Author Man',
-          genre: 'Spooky',
-          ISBN: '978-3-16-148410-0'
-        }
+        const data = bookFactory();
 
-        const response = await request(app).post('/books').send(data);
+        const response = await appPost('/books', data);
         const newBookRecord = await Book.findByPk(response.body.id, {
           raw: true,
         });
@@ -34,22 +29,25 @@ describe('/books', () => {
       });
 
       it('contain a title', async () => {
-        const response = await request(app).post('/books').send({
+        const data = {
           author: 'Author Man',
           genre: 'Spooky',
           ISBN: '978-3-16-148410-0'
-        });
+        };
+
+        const response = await appPost('/books', data);
 
         expect(response.status).to.equal(500);
         expect(response.body.error[0]).to.equal('Book.title cannot be null');
       });
 
       it('contain an author', async () => {
-        const response = await request(app).post('/books').send({
+        const data = {
           title: 'title',
           genre: 'Spooky',
-          ISBN: '978-3-16-148410-0'
-        });
+          ISBN: '978-3-16-148410-0'          
+        }
+        const response = await appPost('/books', data);
 
         expect(response.status).to.equal(500);
         expect(response.body.error[0]).to.equal('Book.author cannot be null');
@@ -62,30 +60,15 @@ describe('/books', () => {
 
     beforeEach(async () => {
       books = await Promise.all([
-        Book.create({
-          title: 'Book Tidfds fds tle',
-          author: 'Authodfsd fsd r Man',
-          genre: 'Spookfd sdf sdy',
-          ISBN: '978-3-16fds -148410-0'
-        }),
-        Book.create({
-          title: 'Book fdf dsfds Title',
-          author: 'Authd fds fdsor Man',
-          genre: 'Spoof df sdf sky',
-          ISBN: '978-3df sdfds fs-16-148410-0'
-        }),
-        Book.create({
-          title: 'Book f sdhffdsTitle',
-          author: 'Aut fdgfgfdghor Man',
-          genre: 'Spoof sdf sdfky',
-          ISBN: '978-3- dfsdf sed16-148410-0'
-        }),
+        Book.create(bookFactory()),
+        Book.create(bookFactory()),
+        Book.create(bookFactory()),
       ]);
     });
 
     describe('GET /books', () => {
       it('gets all books records', async () => {
-        const response = await request(app).get('/books');
+        const response = await appGet('/books');
 
         expect(response.status).to.equal(200);
         expect(response.body.length).to.equal(3);
@@ -104,7 +87,7 @@ describe('/books', () => {
     describe('GET /books/:id', () => {
       it('gets books record by id', async () => {
         const book = books[0];
-        const response = await request(app).get(`/books/${book.id}`);
+        const response = await appGet(`/books/${book.id}`);
 
         expect(response.status).to.equal(200);
         expect(response.body.title).to.equal(book.title);
@@ -114,7 +97,7 @@ describe('/books', () => {
       });
 
       it('returns a 404 if the book does not exist', async () => {
-        const response = await request(app).get('/books/12345');
+        const response = await appGet('/books/12345');
 
         expect(response.status).to.equal(404);
         expect(response.body.error).to.equal('The book could not be found.');
@@ -124,21 +107,21 @@ describe('/books', () => {
     describe('PATCH /books/:id', () => {
       it('updates books email by id', async () => {
         const book = books[0];
-        const response = await request(app)
-          .patch(`/books/${book.id}`)
-          .send({ author: 'Arthur' });
+        
+        const data = { author: 'Arthur' };
+
+        const response = await appPatch(`/books/${book.id}`, data);
         const updatedBookRecord = await Book.findByPk(book.id, {
           raw: true,
         });
 
         expect(response.status).to.equal(200);
-        expect(updatedBookRecord.author).to.equal('Arthur');
+        expect(updatedBookRecord.author).to.equal(data.author);
       });
 
       it('returns a 404 if the book does not exist', async () => {
-        const response = await request(app)
-          .patch('/books/12345')
-          .send({ author: 'Mike' });
+        const data = { author: 'Mike' }
+        const response = await appPatch('/books/12345', data);
 
         expect(response.status).to.equal(404);
         expect(response.body.error).to.equal('The book could not be found.');
@@ -148,7 +131,7 @@ describe('/books', () => {
     describe('DELETE /books/:id', () => {
       it('deletes book record by id', async () => {
         const book = books[0];
-        const response = await request(app).delete(`/books/${book.id}`);
+        const response = await appDelete(`/books/${book.id}`);
         const deletedBook = await Book.findByPk(book.id, { raw: true });
 
         expect(response.status).to.equal(204);
@@ -156,7 +139,8 @@ describe('/books', () => {
       });
 
       it('returns a 404 if the book does not exist', async () => {
-        const response = await request(app).delete('/books/12345');
+        const response = await appDelete('/books/12345');
+
         expect(response.status).to.equal(404);
         expect(response.body.error).to.equal('The book could not be found.');
       });

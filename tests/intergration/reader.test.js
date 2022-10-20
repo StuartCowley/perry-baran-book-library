@@ -1,7 +1,7 @@
 const { expect } = require('chai');
-const request = require('supertest');
 const { Reader } = require('../../src/models');
-const app = require('../../src/app');
+const { readerFactory } = require('../helpers/dataFactory');
+const { appPost, appGet, appPatch, appDelete } = require('../helpers/requestHelpers');
 
 describe('/readers', () => {
   before(async () => Reader.sequelize.sync());
@@ -13,28 +13,27 @@ describe('/readers', () => {
   describe('with no records in the database', () => {
     describe('POST /readers', () => {
       it('creates a new reader in the database', async () => {
-        const response = await request(app).post('/readers').send({
-          name: 'Elizabeth Bennet',
-          email: 'future_ms_darcy@gmail.com',
-          password: 'password'
-        });
+        const data = readerFactory();
+        const response = await appPost('/readers', data);
         const newReaderRecord = await Reader.findByPk(response.body.id, {
           raw: true,
         });
 
         expect(response.status).to.equal(201);
-        expect(response.body.name).to.equal('Elizabeth Bennet');
-        expect(newReaderRecord.name).to.equal('Elizabeth Bennet');
-        expect(newReaderRecord.email).to.equal('future_ms_darcy@gmail.com');
-        expect(newReaderRecord.password).to.equal('password');
+        expect(response.body.name).to.equal(data.name);
+        expect(newReaderRecord.name).to.equal(data.name);
+        expect(newReaderRecord.email).to.equal(data.email);
+        expect(newReaderRecord.password).to.equal(data.password);
       });
 
       describe('name', () => {
         it('must contain a name', async () => {
-          const response = await request(app).post('/readers').send({
+          const data = {
             email: 'future_ms_darcy@gmail.com',
             password: 'password'
-          });
+          };
+
+          const response = await appPost('/readers', data);
 
           expect(response.status).to.equal(500);
           expect(response.body.error[0]).to.equal('Reader.name cannot be null');
@@ -43,21 +42,20 @@ describe('/readers', () => {
       
       describe('email', () => {
         it('must contain an email', async () => {
-          const response = await request(app).post('/readers').send({
+          const data = {
             name: 'Elizabeth Bennet',
             password: 'password'
-          });
+          };
+
+          const response = await appPost('/readers', data);
 
           expect(response.status).to.equal(500);
           expect(response.body.error[0]).to.equal('Reader.email cannot be null')
         });
 
         it('email must be valid format', async () => {
-          const response = await request(app).post('/readers').send({
-            name: 'Elizabeth Bennet',
-            email: 'future_ms_darcy',
-            password: 'password'
-          });
+          const data = readerFactory({email: 'fake'})
+          const response = await appPost('/readers', data);
 
           expect(response.status).to.equal(500);
           expect(response.body.error[0]).to.equal('Validation isEmail on email failed')
@@ -66,21 +64,20 @@ describe('/readers', () => {
 
       describe('password', () => {
         it('must contain a password', async () => {
-          const response = await request(app).post('/readers').send({
+          const data = {
             name: 'Elizabeth Bennet',
             email: 'future_ms_darcy@gmail.com'
-          });
+          };
+
+          const response = await appPost('/readers', data);
 
           expect(response.status).to.equal(500);
           expect(response.body.error[0]).to.equal('Reader.password cannot be null')
         });
 
         it('password must atleast 8 characters long', async () => {
-          const response = await request(app).post('/readers').send({
-            name: 'Elizabeth Bennet',
-            email: 'future_ms_darcy@gmail.com',
-            password: 'passwor'
-          });
+          const data = readerFactory({password: 'passwor'})
+          const response = await appPost('/readers', data);
 
           expect(response.status).to.equal(500);
           expect(response.body.error[0]).to.equal('Validation len on password failed')
@@ -94,30 +91,18 @@ describe('/readers', () => {
 
     beforeEach(async () => {
       readers = await Promise.all([
-        Reader.create({
-          name: 'Elizabeth Bennet',
-          email: 'future_ms_darcy@gmail.com',
-          password: 'password'
-        }),
-        Reader.create({ 
-          name: 'Arya Stark', 
-          email: 'vmorgul@me.com',
-          password: 'Ad93u43dfd' 
-        }),
-        Reader.create({ 
-          name: 'Lyra Belacqua', 
-          email: 'darknorth123@msn.org', 
-          password: 'AFDSFSDFset3'
-        }),
+        Reader.create(readerFactory()),
+        Reader.create(readerFactory()),
+        Reader.create(readerFactory()),
       ]);
     });
 
     describe('GET /readers', () => {
       it('gets all readers records', async () => {
-        const response = await request(app).get('/readers');
+        const response = await appGet('/readers');
 
         expect(response.status).to.equal(200);
-        expect(response.body.length).to.equal(3);
+        expect(response.body.length).to.equal(readers.length);
 
         response.body.forEach((reader) => {
           const expected = readers.find((a) => a.id === reader.id);
@@ -132,7 +117,7 @@ describe('/readers', () => {
     describe('GET /readers/:id', () => {
       it('gets readers record by id', async () => {
         const reader = readers[0];
-        const response = await request(app).get(`/readers/${reader.id}`);
+        const response = await appGet(`/readers/${reader.id}`);
 
         expect(response.status).to.equal(200);
         expect(response.body.name).to.equal(reader.name);
@@ -141,7 +126,7 @@ describe('/readers', () => {
       });
 
       it('returns a 404 if the reader does not exist', async () => {
-        const response = await request(app).get('/readers/12345');
+        const response = await appGet('/readers/12345');
 
         expect(response.status).to.equal(404);
         expect(response.body.error).to.equal('The reader could not be found.');
@@ -151,21 +136,22 @@ describe('/readers', () => {
     describe('PATCH /readers/:id', () => {
       it('updates readers email by id', async () => {
         const reader = readers[0];
-        const response = await request(app)
-          .patch(`/readers/${reader.id}`)
-          .send({ email: 'miss_e_bennet@gmail.com' });
+
+        const data = { email: 'miss_e_bennet@gmail.com' }
+
+        const response = await appPatch(`/readers/${reader.id}`, data);
         const updatedReaderRecord = await Reader.findByPk(reader.id, {
           raw: true,
         });
 
         expect(response.status).to.equal(200);
-        expect(updatedReaderRecord.email).to.equal('miss_e_bennet@gmail.com');
+        expect(updatedReaderRecord.email).to.equal(data.email);
       });
 
       it('returns a 404 if the reader does not exist', async () => {
-        const response = await request(app)
-          .patch('/readers/12345')
-          .send({ email: 'some_new_email@gmail.com' });
+        const data = { email: 'some_new_email@gmail.com' }
+
+        const response = await appPatch('/readers/12345', data);
 
         expect(response.status).to.equal(404);
         expect(response.body.error).to.equal('The reader could not be found.');
@@ -175,7 +161,7 @@ describe('/readers', () => {
     describe('DELETE /readers/:id', () => {
       it('deletes reader record by id', async () => {
         const reader = readers[0];
-        const response = await request(app).delete(`/readers/${reader.id}`);
+        const response = await appDelete(`/readers/${reader.id}`);
         const deletedReader = await Reader.findByPk(reader.id, { raw: true });
 
         expect(response.status).to.equal(204);
@@ -183,7 +169,8 @@ describe('/readers', () => {
       });
 
       it('returns a 404 if the reader does not exist', async () => {
-        const response = await request(app).delete('/readers/12345');
+        const response = await appDelete('/readers/12345');
+        
         expect(response.status).to.equal(404);
         expect(response.body.error).to.equal('The reader could not be found.');
       });
