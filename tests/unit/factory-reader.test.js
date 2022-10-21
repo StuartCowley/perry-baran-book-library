@@ -40,7 +40,7 @@ describe('readerFactory', () => {
     expect(password).to.equal(data.password);
   });
 
-  it('works with empty null', () => {
+  it('works with null', () => {
     const data = {
       name: null,
       email: null,

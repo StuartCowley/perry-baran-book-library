@@ -20,8 +20,22 @@ const setupDatabase = () => {
   const Genre = GenreModel(connection, Sequelize);
 
   Reader.hasMany(Book);
+
   Genre.hasMany(Book);
   Book.belongsTo(Genre);
+
+  Author.hasMany(Book, {
+    foreignKey: {
+      allowNull: false,
+      validate: {
+        notNull: {
+          args: [true],
+          msg: 'Book must have an author'
+        }
+      }
+    }
+  });
+  Book.belongsTo(Author);
 
   connection.sync({ alter: true });
   return {

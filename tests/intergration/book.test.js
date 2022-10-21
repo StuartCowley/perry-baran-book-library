@@ -1,19 +1,23 @@
 const { expect } = require('chai');
-const { Book } = require('../../src/models');
-const { bookFactory } = require('../helpers/dataFactory');
+const { Book, Author } = require('../../src/models');
+const { bookFactory, authorFactory } = require('../helpers/dataFactory');
 const { appPost, appGet, appPatch, appDelete } = require('../helpers/requestHelpers');
 
 describe('/books', () => {
+  let author;
+
   before(async () => await Book.sequelize.sync());
 
   beforeEach(async () => {
     await Book.destroy({ where: {} });
+
+    author = await Author.create(authorFactory());
   });
 
   describe('with no records in the database', () => {
     describe('POST /books', () => {
       it('creates a new book in the database', async () => {
-        const data = bookFactory();
+        const data = bookFactory({ authorId: author.id });
 
         const response = await appPost('/books', data);
         const newBookRecord = await Book.findByPk(response.body.id, {
@@ -23,13 +27,12 @@ describe('/books', () => {
         expect(response.status).to.equal(201);
         expect(response.body.title).to.equal(data.title);
         expect(newBookRecord.title).to.equal(data.title);
-        expect(newBookRecord.author).to.equal(data.author);
         expect(newBookRecord.ISBN).to.equal(data.ISBN);
       });
 
       describe('title', () => {
         it('must contain a title', async () => {
-          const data = bookFactory({ title: null });
+          const data = bookFactory({ title: null, authorId: author.id });
 
           const response = await appPost('/books', data);
 
@@ -38,12 +41,23 @@ describe('/books', () => {
         });
 
         it('title cannot be empty', async () => {
-          const data = bookFactory({ title: '' });
+          const data = bookFactory({ title: '',  authorId: author.id });
 
           const response = await appPost('/books', data);
 
           expect(response.status).to.equal(500);
           expect(response.body.error[0]).to.equal('The book title cannot be empty');
+        });
+      });
+
+      describe('author', () => {
+        it('must contain an authorId of a valid author', async () => {
+          const data = bookFactory({ authorId: null });
+
+          const response = await appPost('/books', data);
+
+          expect(response.status).to.equal(500);
+          expect(response.body.error[0]).to.equal('Book must have an author');
         });
       });
     });
@@ -54,9 +68,9 @@ describe('/books', () => {
 
     beforeEach(async () => {
       books = await Promise.all([
-        Book.create(bookFactory()),
-        Book.create(bookFactory()),
-        Book.create(bookFactory()),
+        Book.create(bookFactory({ authorId: author.id })),
+        Book.create(bookFactory({ authorId: author.id })),
+        Book.create(bookFactory({ authorId: author.id })),
       ]);
     });
 
@@ -83,7 +97,6 @@ describe('/books', () => {
 
         expect(response.status).to.equal(200);
         expect(response.body.title).to.equal(book.title);
-        expect(response.body.author).to.equal(book.author);
         expect(response.body.genre).to.equal(book.genre);
         expect(response.body.ISBN).to.equal(book.ISBN);
       });

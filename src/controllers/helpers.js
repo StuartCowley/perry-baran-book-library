@@ -13,8 +13,27 @@ const getModel = (model) => {
 
 const getOptions = (model) => {
   switch(model) {
-    case 'book': return { include: Genre };
-    case 'genre': return { include: Book };
+    case 'book': return { 
+      include: [
+        { model: Genre },
+        { model: Author }
+    ]};
+    case 'author': return { 
+      include: [{
+        model: Book,
+        include: [{
+          model: Genre
+        }]
+      }] 
+    };
+    case 'genre': return { 
+      include: [{
+        model: Book,
+        include: [{
+          model: Author
+        }]
+      }]
+    };
     default: return {};
   };
 };
@@ -88,5 +107,5 @@ exports.delete = async (id, res, model) => {
     };
   } catch (err) {
     res.status(500).json({ error: err.errors.map((e) => e.message) });
-  }
-}
+  };
+};
