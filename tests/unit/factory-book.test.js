@@ -27,4 +27,36 @@ describe('bookFactory', () => {
     expect(genre).to.equal(data.genre);
     expect(ISBN).to.equal(data.ISBN);
   });
+
+  it('works with empty strings', () =>{
+    const data = {
+      title: '',
+      author: '',
+      genre: '',
+      ISBN: ''
+    };
+
+    const {title, author, genre, ISBN} = bookFactory(data);
+
+    expect(title).to.equal(data.title);
+    expect(author).to.equal(data.author);
+    expect(genre).to.equal(data.genre);
+    expect(ISBN).to.equal(data.ISBN);
+  });
+
+  it('works with null', () =>{
+    const data = {
+      title: null,
+      author: null,
+      genre: null,
+      ISBN: null
+    };
+
+    const {title, author, genre, ISBN} = bookFactory(data);
+
+    expect(title).to.equal(data.title);
+    expect(author).to.equal(data.author);
+    expect(genre).to.equal(data.genre);
+    expect(ISBN).to.equal(data.ISBN);
+  });
 });

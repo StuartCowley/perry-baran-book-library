@@ -28,10 +28,7 @@ describe('/readers', () => {
 
       describe('name', () => {
         it('must contain a name', async () => {
-          const data = {
-            email: 'future_ms_darcy@gmail.com',
-            password: 'password'
-          };
+          const data = readerFactory({ name: null });
 
           const response = await appPost('/readers', data);
 
@@ -40,11 +37,7 @@ describe('/readers', () => {
         });
 
         it('name must not be empty', async () => {
-          const data = {
-            name: '',
-            email: 'future_ms_darcy@gmail.com',
-            password: 'password'
-          };
+          const data = readerFactory({ name: '' });
 
           const response = await appPost('/readers', data);
 
@@ -55,10 +48,7 @@ describe('/readers', () => {
       
       describe('email', () => {
         it('must contain an email', async () => {
-          const data = {
-            name: 'Elizabeth Bennet',
-            password: 'password'
-          };
+          const data = readerFactory({ email: null });
 
           const response = await appPost('/readers', data);
 
@@ -87,10 +77,7 @@ describe('/readers', () => {
 
       describe('password', () => {
         it('must contain a password', async () => {
-          const data = {
-            name: 'Elizabeth Bennet',
-            email: 'future_ms_darcy@gmail.com'
-          };
+          const data = readerFactory({ password: null });
 
           const response = await appPost('/readers', data);
 
@@ -99,7 +86,7 @@ describe('/readers', () => {
         });
 
         it('password must atleast 8 characters long', async () => {
-          const data = readerFactory({password: 'passwor'})
+          const data = readerFactory({password: '1234567'})
           const response = await appPost('/readers', data);
 
           expect(response.status).to.equal(500);

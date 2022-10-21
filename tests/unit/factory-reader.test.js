@@ -25,4 +25,32 @@ describe('readerFactory', () => {
     expect(email).to.equal(data.email);
     expect(password).to.equal(data.password);
   });
+
+  it('works with empty strings', () => {
+    const data = {
+      name: '',
+      email: '',
+      password: ''
+    };
+
+    const { name, email, password } = readerFactory(data);
+
+    expect(name).to.equal(data.name);
+    expect(email).to.equal(data.email);
+    expect(password).to.equal(data.password);
+  });
+
+  it('works with empty null', () => {
+    const data = {
+      name: null,
+      email: null,
+      password: null
+    };
+
+    const { name, email, password } = readerFactory(data);
+
+    expect(name).to.equal(data.name);
+    expect(email).to.equal(data.email);
+    expect(password).to.equal(data.password);
+  });
 });

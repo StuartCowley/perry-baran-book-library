@@ -36,9 +36,7 @@ describe('/authors', () => {
         });
 
         it('author cannot be empty', async () => {
-          const data = {
-            author: ''
-          };
+          const data = authorFactory('');
 
           const response = await appPost('/authors', data);
 
@@ -47,9 +45,7 @@ describe('/authors', () => {
         });
 
         it('author must be unique', async () => {
-          const data = {
-            author: 'Author'
-          };
+          const data = authorFactory('Arther');
 
           await appPost('/authors', data);
           const response = await appPost('/authors', data);

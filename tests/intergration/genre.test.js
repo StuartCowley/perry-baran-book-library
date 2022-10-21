@@ -27,7 +27,7 @@ describe('/genres', () => {
 
       describe('genre', () => {
         it('must contain a genre', async () => {
-          const data = undefined;
+          const data = genreFactory(null);
 
           const response = await appPost('/genres', data);
 
@@ -36,9 +36,7 @@ describe('/genres', () => {
         });
 
         it('genre cannot be empty', async () => {
-          const data = {
-            genre: ''
-          };
+          const data = genreFactory('');
 
           const response = await appPost('/genres', data);
 
@@ -47,9 +45,7 @@ describe('/genres', () => {
         });
 
         it('genre must be unique', async () => {
-          const data = {
-            genre: 'Genre'
-          };
+          const data = genreFactory('Genre');
 
           await appPost('/genres', data);
           const response = await appPost('/genres', data);

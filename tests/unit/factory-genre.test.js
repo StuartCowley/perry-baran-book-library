@@ -15,4 +15,20 @@ describe('genreFactory', () => {
 
     expect(genre).to.equal(data);
   });
+
+  it('works with empty string', () =>{
+    const data = '';
+
+    const { genre } = genreFactory(data);
+
+    expect(genre).to.equal(data);
+  });
+
+  it('works with null', () =>{
+    const data = null;
+
+    const { genre } = genreFactory(data);
+
+    expect(genre).to.equal(data);
+  });
 });

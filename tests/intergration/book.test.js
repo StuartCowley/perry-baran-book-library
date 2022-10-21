@@ -24,17 +24,12 @@ describe('/books', () => {
         expect(response.body.title).to.equal(data.title);
         expect(newBookRecord.title).to.equal(data.title);
         expect(newBookRecord.author).to.equal(data.author);
-        expect(newBookRecord.genre).to.equal(data.genre);
         expect(newBookRecord.ISBN).to.equal(data.ISBN);
       });
 
       describe('title', () => {
         it('must contain a title', async () => {
-          const data = {
-            author: 'Author Man',
-            genre: 'Spooky',
-            ISBN: '978-3-16-148410-0'
-          };
+          const data = bookFactory({ title: null });
 
           const response = await appPost('/books', data);
 
@@ -42,31 +37,14 @@ describe('/books', () => {
           expect(response.body.error[0]).to.equal('Must provide a book title');
         });
 
-        it('title cannor be empty', async () => {
-          const data = {
-            title: '',
-            author: 'Author Man',
-            genre: 'Spooky',
-            ISBN: '978-3-16-148410-0'
-          };
+        it('title cannot be empty', async () => {
+          const data = bookFactory({ title: '' });
 
           const response = await appPost('/books', data);
 
           expect(response.status).to.equal(500);
           expect(response.body.error[0]).to.equal('The book title cannot be empty');
         });
-      });
-
-      it('contain an author', async () => {
-        const data = {
-          title: 'title',
-          genre: 'Spooky',
-          ISBN: '978-3-16-148410-0'          
-        }
-        const response = await appPost('/books', data);
-
-        expect(response.status).to.equal(500);
-        expect(response.body.error[0]).to.equal('Must provide an author');
       });
     });
   });
@@ -124,7 +102,7 @@ describe('/books', () => {
       it('updates books by id', async () => {
         const book = books[0];
         
-        const data = { author: 'Arthur' };
+        const data = { title: 'Title' };
 
         const response = await appPatch(`/books/${book.id}`, data);
         const updatedBookRecord = await Book.findByPk(book.id, {
@@ -132,11 +110,11 @@ describe('/books', () => {
         });
 
         expect(response.status).to.equal(200);
-        expect(updatedBookRecord.author).to.equal(data.author);
+        expect(updatedBookRecord.title).to.equal(data.title);
       });
 
       it('returns a 404 if the book does not exist', async () => {
-        const data = { author: 'Mike' }
+        const data = { title: 'Title' };
         const response = await appPatch('/books/12345', data);
 
         expect(response.status).to.equal(404);
