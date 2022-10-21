@@ -4,7 +4,7 @@ const { genreFactory } = require('../helpers/dataFactory');
 const { appPost, appGet, appPatch, appDelete } = require('../helpers/requestHelpers');
 
 describe('/genres', () => {
-  before(async () => Genre.sequelize.sync());
+  before(async () => await Genre.sequelize.sync());
 
   beforeEach(async () => {
     await Genre.destroy({ where: {} });

@@ -11,6 +11,14 @@ const getModel = (model) => {
   return models[model];
 };
 
+const getOptions = (model) => {
+  switch(model) {
+    case 'book': return { include: Genre };
+    case 'genre': return { include: Book };
+    default: return {};
+  };
+};
+
 exports.create = async (data, res, model) => {
   const Model = getModel(model);
 
@@ -24,9 +32,10 @@ exports.create = async (data, res, model) => {
 
 exports.readAll = async (res, model) => {
   const Model = getModel(model);
+  const options = getOptions(model);
 
   try {
-    const response = await Model.findAll();
+    const response = await Model.findAll(options);
 
     res.status(200).json(response);
   } catch (err) {
@@ -36,9 +45,10 @@ exports.readAll = async (res, model) => {
 
 exports.readById = async (id, res, model) => {
   const Model = getModel(model);
+  const options = getOptions(model);
 
   try {
-    const response = await Model.findByPk(id);
+    const response = await Model.findByPk(id, options);
 
     if (!response) {
       res.status(404).json({ error: `The ${model} could not be found.` });

@@ -11,13 +11,13 @@ exports.readerFactory = (data = {}) => {
 };
 
 exports.bookFactory = (data = {}) => {
-  const { title, author, genre, ISBN } = data;
+  const { title, author, genreId, ISBN } = data;
 
   return {
     title: title !== undefined ? title : faker.lorem.word(),
     author: author !== undefined ? author : faker.lorem.word(),
-    genre: genre !== undefined ? genre : faker.lorem.word(),
-    ISBN: ISBN !== undefined ? ISBN : faker.random.numeric(13)
+    ISBN: ISBN !== undefined ? ISBN : faker.random.numeric(13),
+    GenreId: genreId
   };
 };
 

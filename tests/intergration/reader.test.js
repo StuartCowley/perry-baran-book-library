@@ -4,7 +4,7 @@ const { readerFactory } = require('../helpers/dataFactory');
 const { appPost, appGet, appPatch, appDelete } = require('../helpers/requestHelpers');
 
 describe('/readers', () => {
-  before(async () => Reader.sequelize.sync());
+  before(async () => await Reader.sequelize.sync());
 
   beforeEach(async () => {
     await Reader.destroy({ where: {} });

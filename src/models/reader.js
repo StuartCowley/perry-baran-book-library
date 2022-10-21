@@ -53,7 +53,7 @@ module.exports = (connection, DataTypes) => {
     defaultScope: {
       attributes: { exclude: ['password'] },
     }
-  }
+  };
 
   return connection.define('Reader', schema, scope);
 };

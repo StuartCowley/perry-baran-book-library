@@ -4,7 +4,7 @@ const { authorFactory } = require('../helpers/dataFactory');
 const { appPost, appGet, appPatch, appDelete } = require('../helpers/requestHelpers');
 
 describe('/authors', () => {
-  before(async () => Author.sequelize.sync());
+  before(async () => await Author.sequelize.sync());
 
   beforeEach(async () => {
     await Author.destroy({ where: {} });

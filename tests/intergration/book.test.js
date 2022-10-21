@@ -4,7 +4,7 @@ const { bookFactory } = require('../helpers/dataFactory');
 const { appPost, appGet, appPatch, appDelete } = require('../helpers/requestHelpers');
 
 describe('/books', () => {
-  before(async () => Book.sequelize.sync());
+  before(async () => await Book.sequelize.sync());
 
   beforeEach(async () => {
     await Book.destroy({ where: {} });
@@ -71,8 +71,6 @@ describe('/books', () => {
           const expected = books.find((a) => a.id === book.id);
 
           expect(book.title).to.equal(expected.title);
-          expect(book.author).to.equal(expected.author);
-          expect(book.genre).to.equal(expected.genre);
           expect(book.ISBN).to.equal(expected.ISBN);
         });
       });
