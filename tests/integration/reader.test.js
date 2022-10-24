@@ -15,15 +15,16 @@ describe('/readers', () => {
       it('creates a new reader in the database', async () => {
         const data = readerFactory();
         const response = await appPost('/readers', data);
-        const newReaderRecord = await Reader.findByPk(response.body.id, {
+        const newReaderRecord = await Reader.unscoped().findByPk(response.body.id, {
           raw: true,
         });
 
         expect(response.status).to.equal(201);
         expect(response.body.name).to.equal(data.name);
+        expect(response.body.password).to.equal(undefined);
         expect(newReaderRecord.name).to.equal(data.name);
         expect(newReaderRecord.email).to.equal(data.email);
-        expect(newReaderRecord.password).to.equal(undefined);
+        expect(newReaderRecord.password).to.equal(data.password);
       });
 
       describe('name', () => {

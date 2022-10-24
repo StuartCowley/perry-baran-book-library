@@ -43,6 +43,8 @@ exports.create = async (data, res, model) => {
 
   try {
     const response = await Model.create(data);
+    delete response.dataValues.password;
+
     res.status(201).json(response);
   } catch (err) {
     res.status(500).json({ error: err.errors.map((e) => e.message) });
