@@ -1,27 +1,47 @@
 const helpers = require('./helpers');
 
 exports.create = async (req, res) => {
-  await helpers.create(req.body, res, 'genre');
+  try {
+    await helpers.create(req.body, res, 'genre');
+  } catch (err) {
+    throw new Error(err);
+  };
 };
 
 exports.readAll = async (_, res) => {
-  await helpers.readAll(res, 'genre');
+  try {
+    await helpers.readAll(res, 'genre');
+  } catch (err) {
+    throw new Error(err);
+  };
 };
 
 exports.readById = async (req, res) => {
   const { genreId } = req.params;
 
-  await helpers.readById(genreId, res, 'genre');
+  try {
+    await helpers.readById(genreId, res, 'genre');
+  } catch (err) {
+    throw new Error(err);
+  };
 };
 
 exports.update = async (req, res) => {
   const { genreId } = req.params;
 
-  await helpers.update(req.body, genreId, res, 'genre');
+  try {
+    await helpers.update(req.body, genreId, res, 'genre');
+  } catch (err) {
+    throw new Error(err);
+  };
 };
 
 exports.delete = async (req, res) => {
   const { genreId } = req.params;
 
-  await helpers.delete(genreId, res, 'genre');
+  try {
+    await helpers.delete(genreId, res, 'genre');
+  } catch (err) {
+    throw new Error(err);
+  };
 };

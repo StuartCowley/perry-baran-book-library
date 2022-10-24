@@ -13,12 +13,11 @@ exports.readerFactory = (data = {}) => {
 exports.bookFactory = (data = {}) => {
   const { title, ISBN, authorId, genreId } = data;
 
-  const randomNum = (length) => {
-    return faker.random.numeric(length, { allowLeadingZeros: true })
-  };
+  const generateISBN13 = () => {
+    const eightOrNine = () => Math.floor(Math.random() * 2 + 8);
+    const randomNum = (length) => faker.random.numeric(length, { allowLeadingZeros: true });
 
-  const generateISBN13 = () => { 
-    return `97${Math.floor(Math.random() * 2 + 8)}-${randomNum(1)}-${randomNum(4)}-${randomNum(4)}-${randomNum(1)}`
+    return `97${eightOrNine()}-${randomNum(1)}-${randomNum(4)}-${randomNum(4)}-${randomNum(1)}`
   };
 
   return {

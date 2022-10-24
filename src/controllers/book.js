@@ -1,27 +1,47 @@
 const helpers = require('./helpers');
 
 exports.create = async (req, res) => {
-  await helpers.create(req.body, res, 'book');
+  try {
+    await helpers.create(req.body, res, 'book');
+  } catch (err) {
+    throw new Error(err);
+  };
 };
 
 exports.readAll = async (_, res) => {
-  await helpers.readAll(res, 'book');
+  try {
+    await helpers.readAll(res, 'book');
+  } catch (err) {
+    throw new Error(err);
+  };
 };
 
 exports.readById = async (req, res) => {
   const { bookId } = req.params;
 
-  await helpers.readById(bookId, res, 'book');
+  try {
+    await helpers.readById(bookId, res, 'book');
+  } catch (err) {
+    throw new Error(err);
+  };
 };
 
 exports.update = async (req, res) => {
   const { bookId } = req.params;
 
-  await helpers.update(req.body, bookId, res, 'book');
+  try {
+    await helpers.update(req.body, bookId, res, 'book');
+  } catch (err) {
+    throw new Error(err);
+  };
 };
 
 exports.delete = async (req, res) => {
   const { bookId } = req.params;
 
-  await helpers.delete(bookId, res, 'book');
-}
+  try {
+    await helpers.delete(bookId, res, 'book');
+  } catch (err) {
+    throw new Error(err);
+  };
+};

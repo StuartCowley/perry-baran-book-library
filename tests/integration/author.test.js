@@ -4,54 +4,76 @@ const { authorFactory } = require('../helpers/dataFactory');
 const { appPost, appGet, appPatch, appDelete } = require('../helpers/requestHelpers');
 
 describe('/authors', () => {
-  before(async () => await Author.sequelize.sync());
+  before(async () => {
+    try {
+      await Author.sequelize.sync()
+    } catch (err) {
+      throw new Error(err);
+    };
+  });
 
-  beforeEach(async () => {
-    await Author.destroy({ where: {} });
+  afterEach(async () => {
+    try {
+      await Author.destroy({ where: {} });
+    } catch (err) {
+      throw new Error(err);
+    };
   });
 
   describe('with no records in the database', () => {
     describe('POST /authors', () => {
       it('creates a new author in the databse', async () => {
-        const data = authorFactory();
+        try {
+          const data = authorFactory();
+          const { status, body } = await appPost('/authors', data);
+          const newAuthorRecord = await Author.findByPk(body.id, {
+            raw: true,
+          });
 
-        const response = await appPost('/authors', data);
-        const newAuthorRecord = await Author.findByPk(response.body.id, {
-          raw: true,
-        });
-
-        expect(response.status).to.equal(201);
-        expect(response.body.author).to.equal(data.author);
-        expect(newAuthorRecord.author).to.equal(data.author)
+          expect(status).to.equal(201);
+          expect(body.author).to.equal(data.author);
+          expect(newAuthorRecord.author).to.equal(data.author)          
+        } catch (err) {
+          throw new Error(err);
+        };
       });
 
       describe('author', () => {
         it('must contain an author', async () => {
-          const data = undefined;
+          try {
+            const data = undefined;
+            const { status, body } = await appPost('/authors', data);
 
-          const response = await appPost('/authors', data);
-
-          expect(response.status).to.equal(500);
-          expect(response.body.error[0]).to.equal('Must provide an author');
+            expect(status).to.equal(500);
+            expect(body.error[0]).to.equal('Must provide an author');          
+          } catch (err) {
+            throw new Error(err);
+          };
         });
 
         it('author cannot be empty', async () => {
-          const data = authorFactory('');
+          try {
+            const data = authorFactory('');
+            const { status, body } = await appPost('/authors', data);
 
-          const response = await appPost('/authors', data);
-
-          expect(response.status).to.equal(500);
-          expect(response.body.error[0]).to.equal('The author cannot be empty');
+            expect(status).to.equal(500);
+            expect(body.error[0]).to.equal('The author cannot be empty');          
+          } catch (err) {
+            throw new Error(err);
+          };
         });
 
         it('author must be unique', async () => {
-          const data = authorFactory('Arther');
+          try {
+            const data = authorFactory('Arther');
+            await appPost('/authors', data);
+            const { status, body } = await appPost('/authors', data);
 
-          await appPost('/authors', data);
-          const response = await appPost('/authors', data);
-
-          expect(response.status).to.equal(500);
-          expect(response.body.error[0]).to.equal('The author must be unique');
+            expect(status).to.equal(500);
+            expect(body.error[0]).to.equal('The author must be unique');          
+          } catch (err) {
+            throw new Error(err);
+          };
         });
       });
     });
@@ -61,85 +83,114 @@ describe('/authors', () => {
     let authors;
 
     beforeEach(async () => {
-      authors = await Promise.all([
-        Author.create(authorFactory()),
-        Author.create(authorFactory()),
-        Author.create(authorFactory()),
-      ]);
+      try {
+        authors = await Promise.all([
+          Author.create(authorFactory()),
+          Author.create(authorFactory()),
+          Author.create(authorFactory()),
+        ]);          
+      } catch (err) {
+        throw new Error(err);
+      };
     });
 
     describe('GET /authors', () => {
       it('gets all author records', async () => {
-        const response = await appGet('/authors');
+        try {
+          const { status, body } = await appGet('/authors');
 
-        expect(response.status).to.equal(200);
-        expect(response.body.length).to.equal(3);
+          expect(status).to.equal(200);
+          expect(body.length).to.equal(3);
 
-        response.body.forEach((author) => {
-          const expected = authors.find((a) => a.id === author.id);
+          body.forEach(author => {
+            const expectedAuthor = authors.find(item => item.id === author.id);
 
-          expect(author.author).to.equal(expected.author);
-        });
+            expect(author.author).to.equal(expectedAuthor.author);
+          });          
+        } catch (err) {
+          throw new Error(err);
+        };
       });
     });
 
     describe('GET /authors/:id', () => {
       it('gets author record by id', async () => {
-        const author = authors[0];
-        const response = await appGet(`/authors/${author.id}`);
+        try {
+          const author = authors[0];
+          const { status, body } = await appGet(`/authors/${author.id}`);
 
-        expect(response.status).to.equal(200);
-        expect(response.body.author).to.equal(author.author);
+          expect(status).to.equal(200);
+          expect(body.author).to.equal(author.author);
+        } catch (err) {
+          throw new Error(err);
+        };
       });
 
       it('returns a 404 if the author does not exist', async () => {
-        const response = await appGet('/authors/12345');
+        try {
+          const { status, body } = await appGet('/authors/12345');
 
-        expect(response.status).to.equal(404);
-        expect(response.body.error).to.equal('The author could not be found.');
+          expect(status).to.equal(404);
+          expect(body.error).to.equal('The author could not be found.');
+        } catch (err) {
+          throw new Error(err);
+        };
       });
     });
 
     describe('PATCH /authors/:id', () => {
       it('updates author by id', async () => {
-        const author = authors[0];
+        try {
+          const author = authors[0];
+          const data = { author: 'Arthur' };
+          const { status } = await appPatch(`/authors/${author.id}`, data);
+          const updatedAuthorRecord = await Author.findByPk(author.id, {
+            raw: true,
+          });
 
-        const data = { author: 'Arthur' };
-
-        const response = await appPatch(`/authors/${author.id}`, data);
-        const updatedAuthorRecord = await Author.findByPk(author.id, {
-          raw: true,
-        });
-
-        expect(response.status).to.equal(200);
-        expect(updatedAuthorRecord.author).to.equal(data.author);
+          expect(status).to.equal(200);
+          expect(updatedAuthorRecord.author).to.equal(data.author);
+        } catch (err) {
+          throw new Error(err);
+        };
       });
 
       it('returns a 404 if the author does not exist', async () => {
+        try {
         const data = { author: 'Arthur' };
+        const { status, body } = await appPatch('/authors/12345', data);
 
-        const response = await appPatch('/authors/12345', data);
-
-        expect(response.status).to.equal(404);
-        expect(response.body.error).to.equal('The author could not be found.');
+        expect(status).to.equal(404);
+        expect(body.error).to.equal('The author could not be found.');
+        } catch (err) {
+          throw new Error(err);
+        };
       });      
     });
 
     describe('DELETE /authors/:id', () => {
       it('deletes author record by id', async () => {
-        const author = authors[0];
-        const response = await appDelete(`/authors/${author.id}`);
-        const deletedAuthor = await Author.findByPk(author.id, { raw: true });
+        try {
+          const author = authors[0];
+          const { status } = await appDelete(`/authors/${author.id}`);
+          const deletedAuthor = await Author.findByPk(author.id, { raw: true });
 
-        expect(response.status).to.equal(204);
-        expect(deletedAuthor).to.equal(null);
+          expect(status).to.equal(204);
+          expect(deletedAuthor).to.equal(null);          
+        } catch (err) {
+          throw new Error(err);
+        };
       });
 
       it('returns a 404 if the author does not exist', async () => {
-        const response = await appDelete('/authors/12345');
+        try {
+          const { status, body } = await appDelete('/authors/12345');
 
-        expect(response.status).to.equal(404);
-        expect(response.body.error).to.equal('The author could not be found.');
+          expect(status).to.equal(404);
+          expect(body.error).to.equal('The author could not be found.');          
+        } catch (err) {
+          throw new Error(err);
+        };
       });
     });
   });

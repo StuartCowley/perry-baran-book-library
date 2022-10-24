@@ -102,6 +102,7 @@ exports.delete = async (id, res, model) => {
 
   try {
     const deletedRows = await Model.destroy({where: { id } });
+
     if (!deletedRows) {
       res.status(404).json({ error: `The ${model} could not be found.` })
     } else {

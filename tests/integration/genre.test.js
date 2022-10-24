@@ -4,54 +4,76 @@ const { genreFactory } = require('../helpers/dataFactory');
 const { appPost, appGet, appPatch, appDelete } = require('../helpers/requestHelpers');
 
 describe('/genres', () => {
-  before(async () => await Genre.sequelize.sync());
+  before(async () => {
+    try {
+      await Genre.sequelize.sync();
+    } catch (err) {
+      throw new Error(err);
+    };
+  });
 
-  beforeEach(async () => {
+  afterEach(async () => {
+    try {
     await Genre.destroy({ where: {} });
+    } catch (err) {
+      throw new Error(err);
+    };
   });
 
   describe('with no records in the database', () => {
-    describe('POST /genres', async () => {
+    describe('POST /genres', () => {
       it('creates a new genre in the database', async () => {
-        const data = genreFactory();
+        try {
+          const data = genreFactory();
+          const { status, body } = await appPost('/genres', data);
+          const newGenreRecord = await Genre.findByPk(body.id, {
+            raw: true,
+          });
 
-        const response = await appPost('/genres', data);
-        const newGenreRecord = await Genre.findByPk(response.body.id, {
-          raw: true,
-        });
-
-        expect(response.status).to.equal(201);
-        expect(response.body.genre).to.equal(data.genre);
-        expect(newGenreRecord.genre).to.equal(data.genre);        
-      })
+          expect(status).to.equal(201);
+          expect(body.genre).to.equal(data.genre);
+          expect(newGenreRecord.genre).to.equal(data.genre);            
+        } catch (err) {
+          throw new Error(err);
+        };
+      });
 
       describe('genre', () => {
         it('must contain a genre', async () => {
-          const data = genreFactory(null);
+          try {
+            const data = genreFactory(null);
+            const { status, body } = await appPost('/genres', data);
 
-          const response = await appPost('/genres', data);
-
-          expect(response.status).to.equal(500);
-          expect(response.body.error[0]).to.equal('Must provide a genre');
+            expect(status).to.equal(500);
+            expect(body.error[0]).to.equal('Must provide a genre');            
+          } catch (err) {
+            throw new Error(err);
+          };
         });
 
         it('genre cannot be empty', async () => {
-          const data = genreFactory('');
+          try {
+            const data = genreFactory('');
+            const { status, body } = await appPost('/genres', data);
 
-          const response = await appPost('/genres', data);
-
-          expect(response.status).to.equal(500);
-          expect(response.body.error[0]).to.equal('The genre cannot be empty');
+            expect(status).to.equal(500);
+            expect(body.error[0]).to.equal('The genre cannot be empty');            
+          } catch (err) {
+            throw new Error(err);
+          };
         });
 
         it('genre must be unique', async () => {
-          const data = genreFactory('Genre');
+          try {
+            const data = genreFactory('Genre');
+            await appPost('/genres', data);
+            const { status, body } = await appPost('/genres', data);
 
-          await appPost('/genres', data);
-          const response = await appPost('/genres', data);
-
-          expect(response.status).to.equal(500);
-          expect(response.body.error[0]).to.equal('The genre must be unique');
+            expect(status).to.equal(500);
+            expect(body.error[0]).to.equal('The genre must be unique');            
+          } catch (err) {
+            throw new Error(err);
+          };
         });
       });
     });
@@ -61,85 +83,114 @@ describe('/genres', () => {
     let genres;
 
     beforeEach(async () => {
-      genres = await Promise.all([
-        Genre.create(genreFactory()),
-        Genre.create(genreFactory()),
-        Genre.create(genreFactory()),
-      ]);
+      try {
+        genres = await Promise.all([
+          Genre.create(genreFactory()),
+          Genre.create(genreFactory()),
+          Genre.create(genreFactory()),
+        ]);            
+      } catch (err) {
+        throw new Error(err);
+      };
     });
 
     describe('GET /genres', () => {
       it('gets all genre records', async () => {
-        const response = await appGet('/genres');
+        try {
+          const { status, body } = await appGet('/genres');
 
-        expect(response.status).to.equal(200);
-        expect(response.body.length).to.equal(3);
+          expect(status).to.equal(200);
+          expect(body.length).to.equal(genres.length);
 
-        response.body.forEach((genre) => {
-          const expected = genres.find((a) => a.id === genre.id);
+          body.forEach(genre => {
+            const expected = genres.find(item => item.id === genre.id);
 
-          expect(genre.genre).to.equal(expected.genre);
-        });
+            expect(genre.genre).to.equal(expected.genre);
+          });            
+        } catch (err) {
+          throw new Error(err);
+        };
       });
     });
 
     describe('GET /genres/:id', () => {
       it('gets genre record by id', async () => {
-        const genre = genres[0];
-        const response = await appGet(`/genres/${genre.id}`);
+        try {
+          const genre = genres[0];
+          const { status, body }= await appGet(`/genres/${genre.id}`);
 
-        expect(response.status).to.equal(200);
-        expect(response.body.genre).to.equal(genre.genre);
+          expect(status).to.equal(200);
+          expect(body.genre).to.equal(genre.genre);            
+        } catch (err) {
+          throw new Error(err);
+        };
       });
 
       it('returns a 404 if the genre does not exist', async () => {
-        const response = await appGet('/genres/12345');
+        try {
+          const { status, body } = await appGet('/genres/12345');
 
-        expect(response.status).to.equal(404);
-        expect(response.body.error).to.equal('The genre could not be found.');
+          expect(status).to.equal(404);
+          expect(body.error).to.equal('The genre could not be found.');            
+        } catch (err) {
+          throw new Error(err);
+        };
       });
     });
 
     describe('PATCH /genres/:id', () => {
       it('updates genre by id', async () => {
-        const genre = genres[0];
+        try {
+          const genre = genres[0];
+          const data = { genre: 'Genre' };
+          const { status } = await appPatch(`/genres/${genre.id}`, data);
+          const updatedGenreRecord = await Genre.findByPk(genre.id, {
+            raw: true,
+          });
 
-        const data = { genre: 'Genre' };
-
-        const response = await appPatch(`/genres/${genre.id}`, data);
-        const updatedGenreRecord = await Genre.findByPk(genre.id, {
-          raw: true,
-        });
-
-        expect(response.status).to.equal(200);
-        expect(updatedGenreRecord.genre).to.equal(data.genre);
+          expect(status).to.equal(200);
+          expect(updatedGenreRecord.genre).to.equal(data.genre);            
+        } catch (err) {
+          throw new Error(err);
+        };
       });
 
       it('returns a 404 if the genre does not exist', async () => {
-        const data = { genre: 'Genre' };
+        try {
+          const data = { genre: 'Genre' };
+          const { status, body } = await appPatch('/genres/12345', data);
 
-        const response = await appPatch('/genres/12345', data);
-
-        expect(response.status).to.equal(404);
-        expect(response.body.error).to.equal('The genre could not be found.');
+          expect(status).to.equal(404);
+          expect(body.error).to.equal('The genre could not be found.');            
+        } catch (err) {
+          throw new Error(err);
+        };
       });      
     });
 
     describe('DELETE /genres/:id', () => {
       it('deletes genre record by id', async () => {
-        const genre = genres[0];
-        const response = await appDelete(`/genres/${genre.id}`);
-        const deletedGenre = await Genre.findByPk(genre.id, { raw: true });
+        try {
+          const genre = genres[0];
+          const { status } = await appDelete(`/genres/${genre.id}`);
+          const deletedGenre = await Genre.findByPk(genre.id, { raw: true });
 
-        expect(response.status).to.equal(204);
-        expect(deletedGenre).to.equal(null);
+          expect(status).to.equal(204);
+          expect(deletedGenre).to.equal(null);            
+        } catch (err) {
+          throw new Error(err);
+        };
       });
 
       it('returns a 404 if the genre does not exist', async () => {
-        const response = await appDelete('/genres/12345');
+        try {
+          const { status, body } = await appDelete('/genres/12345');
 
-        expect(response.status).to.equal(404);
-        expect(response.body.error).to.equal('The genre could not be found.');
+          expect(status).to.equal(404);
+          expect(body.error).to.equal('The genre could not be found.');            
+        } catch (err) {
+          throw new Error(err);
+        };
       });
     });
   });
