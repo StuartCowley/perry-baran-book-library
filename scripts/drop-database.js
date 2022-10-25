@@ -19,7 +19,6 @@ const setUpDatabase = async () => {
 
     connection.query(`DROP DATABASE ${DB_NAME}`, () => connection.end());
   } catch (err) {
-    // if something goes wrong, console.log the error and the current environment variables
     console.log(
       `Your environment variables might be wrong. Please double check .env file`
     );
