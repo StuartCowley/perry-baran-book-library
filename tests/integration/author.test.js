@@ -9,7 +9,7 @@ describe('/authors', () => {
       await Author.sequelize.sync()
     } catch (err) {
       throw new Error(err);
-    };
+    }
   });
 
   afterEach(async () => {
@@ -17,7 +17,7 @@ describe('/authors', () => {
       await Author.destroy({ where: {} });
     } catch (err) {
       throw new Error(err);
-    };
+    }
   });
 
   describe('with no records in the database', () => {
@@ -35,7 +35,7 @@ describe('/authors', () => {
           expect(newAuthorRecord.author).to.equal(data.author)          
         } catch (err) {
           throw new Error(err);
-        };
+        }
       });
 
       describe('author', () => {
@@ -48,7 +48,7 @@ describe('/authors', () => {
             expect(body.error[0]).to.equal('Must provide an author');          
           } catch (err) {
             throw new Error(err);
-          };
+          }
         });
 
         it('author cannot be empty', async () => {
@@ -60,7 +60,7 @@ describe('/authors', () => {
             expect(body.error[0]).to.equal('The author cannot be empty');          
           } catch (err) {
             throw new Error(err);
-          };
+          }
         });
 
         it('author must be unique', async () => {
@@ -73,7 +73,7 @@ describe('/authors', () => {
             expect(body.error[0]).to.equal('The author must be unique');          
           } catch (err) {
             throw new Error(err);
-          };
+          }
         });
       });
     });
@@ -91,7 +91,7 @@ describe('/authors', () => {
         ]);          
       } catch (err) {
         throw new Error(err);
-      };
+      }
     });
 
     describe('GET /authors', () => {
@@ -109,7 +109,7 @@ describe('/authors', () => {
           });          
         } catch (err) {
           throw new Error(err);
-        };
+        }
       });
     });
 
@@ -123,7 +123,7 @@ describe('/authors', () => {
           expect(body.author).to.equal(author.author);
         } catch (err) {
           throw new Error(err);
-        };
+        }
       });
 
       it('returns a 404 if the author does not exist', async () => {
@@ -134,7 +134,7 @@ describe('/authors', () => {
           expect(body.error).to.equal('The author could not be found.');
         } catch (err) {
           throw new Error(err);
-        };
+        }
       });
     });
 
@@ -152,7 +152,7 @@ describe('/authors', () => {
           expect(updatedAuthorRecord.author).to.equal(data.author);
         } catch (err) {
           throw new Error(err);
-        };
+        }
       });
 
       it('returns a 404 if the author does not exist', async () => {
@@ -164,7 +164,7 @@ describe('/authors', () => {
         expect(body.error).to.equal('The author could not be found.');
         } catch (err) {
           throw new Error(err);
-        };
+        }
       });      
     });
 
@@ -179,7 +179,7 @@ describe('/authors', () => {
           expect(deletedAuthor).to.equal(null);          
         } catch (err) {
           throw new Error(err);
-        };
+        }
       });
 
       it('returns a 404 if the author does not exist', async () => {
@@ -190,7 +190,7 @@ describe('/authors', () => {
           expect(body.error).to.equal('The author could not be found.');          
         } catch (err) {
           throw new Error(err);
-        };
+        }
       });
     });
   });

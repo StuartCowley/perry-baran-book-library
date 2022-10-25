@@ -5,7 +5,7 @@ exports.create = async (req, res) => {
     await helpers.create(req.body, res, 'genre');
   } catch (err) {
     throw new Error(err);
-  };
+  }
 };
 
 exports.readAll = async (_, res) => {
@@ -13,7 +13,7 @@ exports.readAll = async (_, res) => {
     await helpers.readAll(res, 'genre');
   } catch (err) {
     throw new Error(err);
-  };
+  }
 };
 
 exports.readById = async (req, res) => {
@@ -23,7 +23,7 @@ exports.readById = async (req, res) => {
     await helpers.readById(genreId, res, 'genre');
   } catch (err) {
     throw new Error(err);
-  };
+  }
 };
 
 exports.update = async (req, res) => {
@@ -33,7 +33,7 @@ exports.update = async (req, res) => {
     await helpers.update(req.body, genreId, res, 'genre');
   } catch (err) {
     throw new Error(err);
-  };
+  }
 };
 
 exports.delete = async (req, res) => {
@@ -43,5 +43,5 @@ exports.delete = async (req, res) => {
     await helpers.delete(genreId, res, 'genre');
   } catch (err) {
     throw new Error(err);
-  };
+  }
 };

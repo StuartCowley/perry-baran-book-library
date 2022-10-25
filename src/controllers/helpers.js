@@ -35,7 +35,7 @@ const getOptions = (model) => {
       }]
     };
     default: return {};
-  };
+  }
 };
 
 exports.create = async (data, res, model) => {
@@ -43,12 +43,14 @@ exports.create = async (data, res, model) => {
 
   try {
     const response = await Model.create(data);
-    delete response.dataValues.password;
+    if (response.dataValues.password) {
+      delete response.dataValues.password;
+    }
 
     res.status(201).json(response);
   } catch (err) {
     res.status(500).json({ error: err.errors.map(e => e.message) });
-  };
+  }
 };
 
 exports.readAll = async (res, model) => {
@@ -61,7 +63,7 @@ exports.readAll = async (res, model) => {
     res.status(200).json(response);
   } catch (err) {
     res.status(500).json({ error: err.errors.map(e => e.message) });
-  };
+  }
 };
 
 exports.readById = async (id, res, model) => {
@@ -75,10 +77,10 @@ exports.readById = async (id, res, model) => {
       res.status(404).json({ error: `The ${model} could not be found.` });
     } else {
       res.status(200).json(response);
-    };
+    }
   } catch (err) {
     res.status(500).json({ error: err.errors.map(e => e.message) });
-  };
+  }
 };
 
 exports.update = async (data, id, res, model) => {
@@ -86,15 +88,14 @@ exports.update = async (data, id, res, model) => {
 
   try {
     const [ updatedRows ] = await Model.update(data, { where: { id } });
-
     if (!updatedRows) {
       res.status(404).json({ error: `The ${model} could not be found.` })
     } else {
       res.status(200).send();
-    };
+    }
   } catch (err) {
     res.status(500).json({ error: err.errors.map(e => e.message) });
-  };
+  }
 };
 
 exports.delete = async (id, res, model) => {
@@ -107,8 +108,8 @@ exports.delete = async (id, res, model) => {
       res.status(404).json({ error: `The ${model} could not be found.` })
     } else {
       res.status(204).send();
-    };
+    }
   } catch (err) {
     res.status(500).json({ error: err.errors.map(e => e.message) });
-  };
+  }
 };

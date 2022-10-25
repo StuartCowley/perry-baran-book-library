@@ -9,7 +9,7 @@ describe('/genres', () => {
       await Genre.sequelize.sync();
     } catch (err) {
       throw new Error(err);
-    };
+    }
   });
 
   afterEach(async () => {
@@ -17,7 +17,7 @@ describe('/genres', () => {
     await Genre.destroy({ where: {} });
     } catch (err) {
       throw new Error(err);
-    };
+    }
   });
 
   describe('with no records in the database', () => {
@@ -35,7 +35,7 @@ describe('/genres', () => {
           expect(newGenreRecord.genre).to.equal(data.genre);            
         } catch (err) {
           throw new Error(err);
-        };
+        }
       });
 
       describe('genre', () => {
@@ -48,7 +48,7 @@ describe('/genres', () => {
             expect(body.error[0]).to.equal('Must provide a genre');            
           } catch (err) {
             throw new Error(err);
-          };
+          }
         });
 
         it('genre cannot be empty', async () => {
@@ -60,7 +60,7 @@ describe('/genres', () => {
             expect(body.error[0]).to.equal('The genre cannot be empty');            
           } catch (err) {
             throw new Error(err);
-          };
+          }
         });
 
         it('genre must be unique', async () => {
@@ -73,7 +73,7 @@ describe('/genres', () => {
             expect(body.error[0]).to.equal('The genre must be unique');            
           } catch (err) {
             throw new Error(err);
-          };
+          }
         });
       });
     });
@@ -91,7 +91,7 @@ describe('/genres', () => {
         ]);            
       } catch (err) {
         throw new Error(err);
-      };
+      }
     });
 
     describe('GET /genres', () => {
@@ -109,7 +109,7 @@ describe('/genres', () => {
           });            
         } catch (err) {
           throw new Error(err);
-        };
+        }
       });
     });
 
@@ -123,7 +123,7 @@ describe('/genres', () => {
           expect(body.genre).to.equal(genre.genre);            
         } catch (err) {
           throw new Error(err);
-        };
+        }
       });
 
       it('returns a 404 if the genre does not exist', async () => {
@@ -134,7 +134,7 @@ describe('/genres', () => {
           expect(body.error).to.equal('The genre could not be found.');            
         } catch (err) {
           throw new Error(err);
-        };
+        }
       });
     });
 
@@ -152,7 +152,7 @@ describe('/genres', () => {
           expect(updatedGenreRecord.genre).to.equal(data.genre);            
         } catch (err) {
           throw new Error(err);
-        };
+        }
       });
 
       it('returns a 404 if the genre does not exist', async () => {
@@ -164,7 +164,7 @@ describe('/genres', () => {
           expect(body.error).to.equal('The genre could not be found.');            
         } catch (err) {
           throw new Error(err);
-        };
+        }
       });      
     });
 
@@ -179,7 +179,7 @@ describe('/genres', () => {
           expect(deletedGenre).to.equal(null);            
         } catch (err) {
           throw new Error(err);
-        };
+        }
       });
 
       it('returns a 404 if the genre does not exist', async () => {
@@ -190,7 +190,7 @@ describe('/genres', () => {
           expect(body.error).to.equal('The genre could not be found.');            
         } catch (err) {
           throw new Error(err);
-        };
+        }
       });
     });
   });

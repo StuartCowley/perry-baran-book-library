@@ -11,7 +11,7 @@ describe('/books', () => {
       await Book.sequelize.sync();
     } catch (err) {
       throw new Error(err);
-    };
+    }
   });
 
   beforeEach(async () => {
@@ -19,7 +19,7 @@ describe('/books', () => {
       author = await Author.create(authorFactory());          
     } catch (err) {
       throw new Error(err);
-    };
+    }
   });
 
   afterEach(async () => {
@@ -27,7 +27,7 @@ describe('/books', () => {
       await Book.destroy({ where: {} });
     } catch (err) {
       throw new Error(err);
-    };
+    }
   });
 
   describe('with no records in the database', () => {
@@ -46,7 +46,7 @@ describe('/books', () => {
           expect(newBookRecord.ISBN).to.equal(data.ISBN);          
         } catch (err) {
           throw new Error(err);
-        };
+        }
       });
 
       describe('title', () => {
@@ -59,7 +59,7 @@ describe('/books', () => {
             expect(body.error[0]).to.equal('Must provide a book title');          
           } catch (err) {
             throw new Error(err);
-          };
+          }
         });
 
         it('title cannot be empty', async () => {
@@ -71,7 +71,7 @@ describe('/books', () => {
             expect(body.error[0]).to.equal('The book title cannot be empty');          
           } catch (err) {
             throw new Error(err);
-          };
+          }
         });
       });
 
@@ -85,7 +85,7 @@ describe('/books', () => {
             expect(body.error[0]).to.equal('Book must have an author');          
           } catch (err) {
             throw new Error(err);
-          };
+          }
         });
       });
 
@@ -100,7 +100,7 @@ describe('/books', () => {
             expect(body.error[0]).to.equal('ISBN must be unique');          
           } catch (err) {
             throw new Error(err);
-          };
+          }
         });
 
         it('can be valid ISBN13', async () => {
@@ -111,7 +111,7 @@ describe('/books', () => {
             expect(status).to.equal(201);          
           } catch (err) {
             throw new Error(err);
-          };
+          }
         });
 
         it('can be valid ISBN10', async () => {
@@ -122,7 +122,7 @@ describe('/books', () => {
             expect(status).to.equal(201);          
           } catch (err) {
             throw new Error(err);
-          };
+          }
         });
 
         it('can be ISBN13 without dashes', async () => {
@@ -133,7 +133,7 @@ describe('/books', () => {
             expect(status).to.equal(201);          
           } catch (err) {
             throw new Error(err);
-          };
+          }
         });
 
         it('can be ISBN10 without dashes', async () => {
@@ -144,7 +144,7 @@ describe('/books', () => {
             expect(status).to.equal(201);          
           } catch (err) {
             throw new Error(err);
-          };
+          }
         });
 
         it('cannot be a numeric string containing less than 10 numbers', async () => {
@@ -156,7 +156,7 @@ describe('/books', () => {
             expect(body.error[0]).to.equal('ISBN must be of valid format');          
           } catch (err) {
             throw new Error(err);
-          };
+          }
         });
 
         it('cannot be a numeric string containing more than 13 numbers', async () => {
@@ -168,7 +168,7 @@ describe('/books', () => {
             expect(body.error[0]).to.equal('ISBN must be of valid format');          
           } catch (err) {
             throw new Error(err);
-          };
+          }
         });
 
         it('cannot be a numeric string not containing 11 or 12 numbers', async () => {
@@ -184,7 +184,7 @@ describe('/books', () => {
             expect(body12.error[0]).to.equal('ISBN must be of valid format');          
           } catch (err) {
             throw new Error(err);
-          };
+          }
         });
 
         it('cannot contain any non numeric characters', async () => {
@@ -196,7 +196,7 @@ describe('/books', () => {
             expect(body.error[0]).to.equal('ISBN must be of valid format');            
           } catch (err) {
             throw new Error(err)
-          };
+          }
         });
 
         it('cannot start with anything other than 978 or 979 for ISBN13', async () => {
@@ -208,7 +208,7 @@ describe('/books', () => {
             expect(body.error[0]).to.equal('ISBN must be of valid format');            
           } catch (err) {
             throw new Error(err);
-          };
+          }
         });
 
         it('cannot contain more than 4 dashes', async () => {
@@ -220,7 +220,7 @@ describe('/books', () => {
             expect(body.error[0]).to.equal('ISBN must be of valid format');            
           } catch (err) {
             throw new Error(err);
-          };
+          }
         });
 
         it('cannot contain less than 4 but more than 0 dashes', async () => {
@@ -232,7 +232,7 @@ describe('/books', () => {
             expect(body.error[0]).to.equal('ISBN must be of valid format');            
           } catch (err) {
             throw new Error(err);
-          };
+          }
         });
       });
     });
@@ -250,7 +250,7 @@ describe('/books', () => {
         ]);
       } catch (err) {
         throw new Error(err);
-      };
+      }
     });
 
     describe('GET /books', () => {
@@ -269,7 +269,7 @@ describe('/books', () => {
           });            
         } catch (err) {
           throw new Error(err);
-        };
+        }
       });
     });
 
@@ -285,7 +285,7 @@ describe('/books', () => {
           expect(body.ISBN).to.equal(book.ISBN);            
         } catch (err) {
           throw new Error(err);
-        };
+        }
       });
 
       it('returns a 404 if the book does not exist', async () => {
@@ -296,7 +296,7 @@ describe('/books', () => {
           expect(body.error).to.equal('The book could not be found.');            
         } catch (err) {
           throw new Error(err);
-        };
+        }
       });
     });
 
@@ -314,7 +314,7 @@ describe('/books', () => {
           expect(updatedBookRecord.title).to.equal(data.title);            
         } catch (err) {
           throw new Error(err);
-        };
+        }
       });
 
       it('returns a 404 if the book does not exist', async () => {
@@ -326,7 +326,7 @@ describe('/books', () => {
           expect(body.error).to.equal('The book could not be found.');            
         } catch (err) {
           throw new Error(err);
-        };
+        }
       });
     });
 
@@ -341,7 +341,7 @@ describe('/books', () => {
           expect(deletedBook).to.equal(null);            
         } catch (err) {
           throw new Error(err);
-        };
+        }
       });
 
       it('returns a 404 if the book does not exist', async () => {
@@ -352,7 +352,7 @@ describe('/books', () => {
           expect(body.error).to.equal('The book could not be found.');            
         } catch (err) {
           throw new Error(err);
-        };
+        }
       });
     });
   });

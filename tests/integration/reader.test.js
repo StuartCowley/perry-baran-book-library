@@ -9,7 +9,7 @@ describe('/readers', () => {
       await Reader.sequelize.sync();
     } catch (err) {
       throw new Error(err);
-    };
+    }
   });
 
   afterEach(async () => {
@@ -17,7 +17,7 @@ describe('/readers', () => {
       await Reader.destroy({ where: {} });
     } catch (err) {
       throw new Error(err);
-    };
+    }
   });
 
   describe('with no records in the database', () => {
@@ -39,7 +39,7 @@ describe('/readers', () => {
           expect(newReaderRecord.password).to.equal(data.password);
         } catch (err) {
           throw new Error(err);
-        };
+        }
       });
 
       describe('name', () => {
@@ -52,7 +52,7 @@ describe('/readers', () => {
             expect(body.error[0]).to.equal('Must provide a name');
           } catch (err) {
             throw new Error(err);
-          };
+          }
         });
 
         it('name must not be empty', async () => {
@@ -64,7 +64,7 @@ describe('/readers', () => {
             expect(body.error[0]).to.equal('The name cannot be empty');
           } catch (err) {
             throw new Error(err);
-          };
+          }
         });
       });
       
@@ -78,7 +78,7 @@ describe('/readers', () => {
             expect(body.error[0]).to.equal('Must provide an email');
           } catch (err) {
             throw new Error(err);
-          };
+          }
         });
 
         it('email must be valid format', async () => {
@@ -90,7 +90,7 @@ describe('/readers', () => {
             expect(body.error[0]).to.equal('Email must be valid');
           } catch (err) {
             throw new Error(err);
-          };
+          }
         });
 
         it('email must be unique', async () => {
@@ -103,7 +103,7 @@ describe('/readers', () => {
             expect(body.error[0]).to.equal('This email is already in use');
           } catch (err) {
             throw new Error(err);
-          };
+          }
         });
       });
 
@@ -117,7 +117,7 @@ describe('/readers', () => {
             expect(body.error[0]).to.equal('Must provide a password');
           } catch (err) {
             throw new Error(err);
-          };
+          }
         });
 
         it('password must atleast 8 characters long', async () => {
@@ -129,7 +129,7 @@ describe('/readers', () => {
             expect(body.error[0]).to.equal('Password must be atleast 8 characters');
           } catch (err) {
             throw new Error(err);
-          };
+          }
         });
       });
     });
@@ -147,7 +147,7 @@ describe('/readers', () => {
         ]);
       } catch (err) {
         throw new Error(err);
-      };
+      }
     });
 
     describe('GET /readers', () => {
@@ -167,7 +167,7 @@ describe('/readers', () => {
           });
         } catch (err) {
           throw new Error(err);
-        };
+        }
       });
     });
 
@@ -183,7 +183,7 @@ describe('/readers', () => {
           expect(body.password).to.equal(undefined);
         } catch (err) {
           throw new Error(err);
-        };
+        }
       });
 
       it('returns a 404 if the reader does not exist', async () => {
@@ -194,7 +194,7 @@ describe('/readers', () => {
           expect(body.error).to.equal('The reader could not be found.');
         } catch (err) {
           throw new Error(err);
-        };
+        }
       });
     });
 
@@ -213,7 +213,7 @@ describe('/readers', () => {
           expect(updatedReaderRecord.password).to.equal(undefined);
         } catch (err) {
           throw new Error(err);
-        };
+        }
       });
 
       it('returns a 404 if the reader does not exist', async () => {
@@ -225,7 +225,7 @@ describe('/readers', () => {
           expect(body.error).to.equal('The reader could not be found.');
         } catch (err) {
           throw new Error(err);
-        };
+        }
       });
     });
 
@@ -240,7 +240,7 @@ describe('/readers', () => {
           expect(deletedReader).to.equal(null);
         } catch (err) {
           throw new Error(err);
-        };
+        }
       });
 
       it('returns a 404 if the reader does not exist', async () => {
@@ -251,7 +251,7 @@ describe('/readers', () => {
           expect(body.error).to.equal('The reader could not be found.');
         } catch (err) {
           throw new Error(err);
-        };
+        }
       });
     });
   });

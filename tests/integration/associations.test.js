@@ -14,7 +14,7 @@ describe('associations', () => {
       await Genre.sequelize.sync();          
     } catch (err) {
       throw new Error(err);
-    };
+    }
   });
 
   beforeEach(async () => {
@@ -36,7 +36,7 @@ describe('associations', () => {
       ]);   
     } catch (err) {
       throw new Error(err);
-    };
+    }
   });
 
   afterEach(async () => {
@@ -45,7 +45,7 @@ describe('associations', () => {
       await Genre.destroy({ where: {} });          
     } catch (err) {
       throw new Error(err);
-    };
+    }
   });
 
   describe('/books', () => {
@@ -64,7 +64,7 @@ describe('associations', () => {
           });          
         } catch (err) {
           throw new Error(err);
-        };
+        }
       });
 
       it('returns associated authors', async () => {
@@ -81,7 +81,7 @@ describe('associations', () => {
           });          
         } catch (err) {
           throw new Error(err);
-        };
+        }
       });
     });
 
@@ -98,7 +98,7 @@ describe('associations', () => {
           expect(body.Genre.genre).to.equal(genre.genre);          
         } catch (err) {
           throw new Error(err);
-        };
+        }
       });
       
       it('returns associated author', async () => {
@@ -113,7 +113,7 @@ describe('associations', () => {
           expect(body.Author.author).to.equal(author.author);          
         } catch (err) {
           throw new Error(err);
-        };
+        }
       });     
     });
   });
@@ -142,7 +142,7 @@ describe('associations', () => {
           });          
         } catch (err) {
           throw new Error(err);
-        };
+        }
       }); 
     });
 
@@ -166,7 +166,7 @@ describe('associations', () => {
           });          
         } catch (err) {
           throw new Error(err);
-        };
+        }
       });
     });
   });
@@ -195,7 +195,7 @@ describe('associations', () => {
           });          
         } catch (err) {
           throw new Error(err);
-        };
+        }
       });
     });
 
@@ -219,7 +219,7 @@ describe('associations', () => {
           });          
         } catch (err) {
           throw new Error(err);
-        };
+        }
       });
     });
   });
