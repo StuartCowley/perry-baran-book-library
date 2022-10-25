@@ -21,5 +21,11 @@ module.exports = (sequelize, DataTypes) => {
     },
   };
 
-  return sequelize.define('Author', schema);
+  const scope = {
+    defaultScope: {
+      attributes: { exclude: ['createdAt', 'updatedAt'] },
+    }
+  };
+
+  return sequelize.define('Author', schema, scope);
 };

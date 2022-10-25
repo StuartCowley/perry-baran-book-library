@@ -19,7 +19,6 @@ Created as part of the Manchester Codes full-stack web development boot-camp.
 ## Todo
 
 - Add automatic tests on push/pull requests to main
-- Unit testing with sinon for controllers
 - Deploy app to Render
 
 

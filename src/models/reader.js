@@ -51,7 +51,7 @@ module.exports = (connection, DataTypes) => {
 
   const scope = {
     defaultScope: {
-      attributes: { exclude: ['password'] },
+      attributes: { exclude: ['password', 'createdAt', 'updatedAt'] },
     }
   };
 

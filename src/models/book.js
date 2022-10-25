@@ -30,5 +30,11 @@ module.exports = (connection, DataTypes) => {
     },
   };
 
-  return connection.define('Book', schema);
+  const scope = {
+    defaultScope: {
+      attributes: { exclude: ['createdAt', 'updatedAt'] },
+    }
+  };
+
+  return connection.define('Book', schema, scope);
 };
