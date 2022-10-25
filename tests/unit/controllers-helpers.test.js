@@ -4,13 +4,21 @@ const helpers = rewire('../../src/controllers/helpers');
 
 describe('controller helpers', () => {
   const data = {};
+  const id = 0;
   const model = 'model';
-  const status = {
-    json: () => {},
-    send: () => {}
+  const Model = {
+    create: () => {},
+    findAll: () => {},
+    findByPk: () => {},
+    update: () => {},
+    destroy: () => {}
   };
   const res = {
     status: () => {}
+  };
+  const status = {
+    json: () => {},
+    send: () => {}
   };
   const response = {
     dataValues: {}
@@ -18,12 +26,16 @@ describe('controller helpers', () => {
   const err = {
     errors: [{ message: 'test' }]
   };
-  const id = 0;
-
+  
+  let modelStub;
   let statusStub;
   let jsonStub;
 
   beforeEach(() => {
+    modelStub = sinon.stub().returns(Model);
+    helpers.__set__({
+      getModel: modelStub
+    });
     statusStub = sinon.stub(res, 'status').returns(status);
     jsonStub = sinon.stub(status, 'json');
   });
@@ -33,241 +45,273 @@ describe('controller helpers', () => {
   });
 
   describe('create', () => {
-    const Model = {
-        create: () => {}
-    };
-
     let createStub;
 
     beforeEach(() => {
-      helpers.__set__({
-        getModel: sinon.stub().returns(Model)
-      });
-      
-      createStub = sinon.stub(Model, 'create')
+      createStub = sinon.stub(Model, 'create');
     });
 
     it('returns 201', async () => {
-      createStub.returns(response);
+      try {
+        createStub.returns(response);
 
-      await helpers.create(data, res, model);
-      
-      sinon.assert.calledOnce(createStub);
-      sinon.assert.calledWith(createStub, data);
-      sinon.assert.calledOnce(statusStub);
-      sinon.assert.calledWith(statusStub, 201);
-      sinon.assert.calledOnce(jsonStub);
-      sinon.assert.calledWith(jsonStub, response);
+        await helpers.create(data, res, model);
+        
+        sinon.assert.calledOnce(modelStub);
+        sinon.assert.calledWith(modelStub, model);
+        sinon.assert.calledOnce(createStub);
+        sinon.assert.calledWith(createStub, data);
+        sinon.assert.calledOnce(statusStub);
+        sinon.assert.calledWith(statusStub, 201);
+        sinon.assert.calledOnce(jsonStub);
+        sinon.assert.calledWith(jsonStub, response);        
+      } catch(err) {
+        throw new Error(err);
+      }
     });
 
     it('returns 500', async () => {
-      createStub.throws(err);
+      try {
+        createStub.throws(err);
 
-      await helpers.create(data, res, model);
+        await helpers.create(data, res, model);
 
-      sinon.assert.calledOnce(statusStub);
-      sinon.assert.calledWith(statusStub, 500);
-      sinon.assert.calledOnce(jsonStub);
-      sinon.assert.calledWith(jsonStub, {error: err.errors.map(e => e.message)});
+        sinon.assert.calledOnce(statusStub);
+        sinon.assert.calledWith(statusStub, 500);
+        sinon.assert.calledOnce(jsonStub);
+        sinon.assert.calledWith(jsonStub, {error: err.errors.map(e => e.message)});        
+      } catch(err) {
+        throw new Error(err);
+      }
     });
   });
 
   describe('read', () => {
-    describe('readAll', () => {
-      const Model = {
-          findAll: () => {}
-      };
-      const options = {};
+    const options = {};
+    let optionsStub;
 
+    beforeEach(() => {
+      optionsStub = sinon.stub().returns(options);
+      helpers.__set__({
+        getOptions: optionsStub
+      });
+    });
+
+    describe('readAll', () => {
       let findAllStub;
 
       beforeEach(() => {
-        helpers.__set__({
-          getModel: sinon.stub().returns(Model),
-          getOptions: sinon.stub().returns(options)
-        });
-        
         findAllStub = sinon.stub(Model, 'findAll');
       });
       
       it('returns 200', async () => {
-        findAllStub.returns(response);
+        try {
+          findAllStub.returns(response);
 
-        await helpers.readAll(res, model);
+          await helpers.readAll(res, model);
 
-        sinon.assert.calledOnce(findAllStub);
-        sinon.assert.calledWith(findAllStub, options);
-        sinon.assert.calledOnce(statusStub);
-        sinon.assert.calledWith(statusStub, 200);
-        sinon.assert.calledOnce(jsonStub);
-        sinon.assert.calledWith(jsonStub, response);
+          sinon.assert.calledOnce(modelStub);
+          sinon.assert.calledWith(modelStub, model);
+          sinon.assert.calledOnce(optionsStub);
+          sinon.assert.calledWith(optionsStub, model);        
+          sinon.assert.calledOnce(findAllStub);
+          sinon.assert.calledWith(findAllStub, options);
+          sinon.assert.calledOnce(statusStub);
+          sinon.assert.calledWith(statusStub, 200);
+          sinon.assert.calledOnce(jsonStub);
+          sinon.assert.calledWith(jsonStub, response);        
+        } catch(err) {
+          throw new Error(err);
+        }
       });
 
       it('returns 500', async () => {
-        findAllStub.throws(err);
+        try {
+          findAllStub.throws(err);
 
-        await helpers.readAll(res, model);
+          await helpers.readAll(res, model);
 
-        sinon.assert.calledOnce(statusStub);
-        sinon.assert.calledWith(statusStub, 500);
-        sinon.assert.calledOnce(jsonStub);
-        sinon.assert.calledWith(jsonStub, {error: err.errors.map(e => e.message)});
+          sinon.assert.calledOnce(statusStub);
+          sinon.assert.calledWith(statusStub, 500);
+          sinon.assert.calledOnce(jsonStub);
+          sinon.assert.calledWith(jsonStub, {error: err.errors.map(e => e.message)});        
+        } catch(err) {
+          throw new Error(err);
+        }
       });
     });
 
     describe('readById', () => {
-      const Model = {
-        findByPk: () => {}
-      };
-      const options = {};
-
       let findByPk;
 
       beforeEach(() => {
-        helpers.__set__({
-          getModel: sinon.stub().returns(Model),
-          getOptions: sinon.stub().returns(options)
-        });
-        
         findByPk = sinon.stub(Model, 'findByPk');
       });
       
       it('returns 200', async () => {
-        findByPk.returns(response);
+        try {
+          findByPk.returns(response);
 
-        await helpers.readById(id, res, model);
+          await helpers.readById(id, res, model);
 
-        sinon.assert.calledOnce(findByPk);
-        sinon.assert.calledWith(findByPk, id, options);
-        sinon.assert.calledOnce(statusStub);
-        sinon.assert.calledWith(statusStub, 200);
-        sinon.assert.calledOnce(jsonStub);
-        sinon.assert.calledWith(jsonStub, response);
+          sinon.assert.calledOnce(modelStub);
+          sinon.assert.calledWith(modelStub, model);
+          sinon.assert.calledOnce(optionsStub);
+          sinon.assert.calledWith(optionsStub, model);
+          sinon.assert.calledOnce(findByPk);
+          sinon.assert.calledWith(findByPk, id, options);
+          sinon.assert.calledOnce(statusStub);
+          sinon.assert.calledWith(statusStub, 200);
+          sinon.assert.calledOnce(jsonStub);
+          sinon.assert.calledWith(jsonStub, response);        
+        } catch(err) {
+          throw new Error(err);
+        }
       });
 
       it('returns 404', async () => {
-        findByPk.returns(undefined);
+        try {
+          findByPk.returns(undefined);
 
-        await helpers.readById(id, res, model);
+          await helpers.readById(id, res, model);
 
-        sinon.assert.calledOnce(statusStub);
-        sinon.assert.calledWith(statusStub, 404);
-        sinon.assert.calledOnce(jsonStub);
-        sinon.assert.calledWith(jsonStub, { error: `The ${model} could not be found.` });
+          sinon.assert.calledOnce(statusStub);
+          sinon.assert.calledWith(statusStub, 404);
+          sinon.assert.calledOnce(jsonStub);
+          sinon.assert.calledWith(jsonStub, { error: `The ${model} could not be found.` });        
+        } catch(err) {
+          throw new Error(err);
+        }
       });
 
       it('returns 500', async () => {
-        findByPk.throws(err);
+        try {
+          findByPk.throws(err);
 
-        await helpers.readById(id, res, model);
+          await helpers.readById(id, res, model);
 
-        sinon.assert.calledOnce(statusStub);
-        sinon.assert.calledWith(statusStub, 500);
-        sinon.assert.calledOnce(jsonStub);
-        sinon.assert.calledWith(jsonStub, {error: err.errors.map(e => e.message)});
+          sinon.assert.calledOnce(statusStub);
+          sinon.assert.calledWith(statusStub, 500);
+          sinon.assert.calledOnce(jsonStub);
+          sinon.assert.calledWith(jsonStub, {error: err.errors.map(e => e.message)});        
+        } catch(err) {
+          throw new Error(err);
+        }
       });
     });
   });
 
   describe('update', () => {
-    const Model = {
-      update: () => {}
-    };
-
     let updateStub;
 
     beforeEach(() => {
-      helpers.__set__({
-        getModel: sinon.stub().returns(Model)
-      });
-      
-      updateStub = sinon.stub(Model, 'update')
+      updateStub = sinon.stub(Model, 'update');
     });
 
     it('returns 200', async () => {
-      const sendStub = sinon.stub(status, 'send');
-      updateStub.returns([response]);
+      try {
+        const sendStub = sinon.stub(status, 'send');
+        updateStub.returns([response]);
 
-      await helpers.update(data, id, res, model);
-      
-      sinon.assert.calledOnce(updateStub);
-      sinon.assert.calledWith(updateStub, data, { where: { id } });
-      sinon.assert.calledOnce(statusStub);
-      sinon.assert.calledWith(statusStub, 200);
-      sinon.assert.calledOnce(sendStub);
+        await helpers.update(data, id, res, model);
+        
+        sinon.assert.calledOnce(modelStub);
+        sinon.assert.calledWith(modelStub, model);
+        sinon.assert.calledOnce(updateStub);
+        sinon.assert.calledWith(updateStub, data, { where: { id } });
+        sinon.assert.calledOnce(statusStub);
+        sinon.assert.calledWith(statusStub, 200);
+        sinon.assert.calledOnce(sendStub);        
+      } catch(err) {
+        throw new Error(err);
+      }
     });
 
     it('returns 404', async () => {
-      updateStub.returns([undefined]);
+      try {
+        updateStub.returns([undefined]);
 
-      await helpers.update(data, id, res, model);
-      
-      sinon.assert.calledOnce(statusStub);
-      sinon.assert.calledWith(statusStub, 404);
-      sinon.assert.calledOnce(jsonStub);
-      sinon.assert.calledWith(jsonStub, { error: `The ${model} could not be found.` });
+        await helpers.update(data, id, res, model);
+        
+        sinon.assert.calledOnce(statusStub);
+        sinon.assert.calledWith(statusStub, 404);
+        sinon.assert.calledOnce(jsonStub);
+        sinon.assert.calledWith(jsonStub, { error: `The ${model} could not be found.` });        
+      } catch(err) {
+        throw new Error(err);
+      }
     });
 
     it('returns 500', async () => {
-      updateStub.throws(err);
+      try {
+        updateStub.throws(err);
 
-      await helpers.update(data, id, res, model);
-      
-      sinon.assert.calledOnce(statusStub);
-      sinon.assert.calledWith(statusStub, 500);
-      sinon.assert.calledOnce(jsonStub);
-      sinon.assert.calledWith(jsonStub, {error: err.errors.map(e => e.message)});
+        await helpers.update(data, id, res, model);
+        
+        sinon.assert.calledOnce(statusStub);
+        sinon.assert.calledWith(statusStub, 500);
+        sinon.assert.calledOnce(jsonStub);
+        sinon.assert.calledWith(jsonStub, {error: err.errors.map(e => e.message)});        
+      } catch(err) {
+        throw new Error(err);
+      }
     });
   });
 
   describe('delete', () => {
-    const Model = {
-      destroy: () => {}
-    };
-
     let destroyStub;
 
     beforeEach(() => {
-      helpers.__set__({
-        getModel: sinon.stub().returns(Model)
-      });
-      
-      destroyStub = sinon.stub(Model, 'destroy')
+      destroyStub = sinon.stub(Model, 'destroy');
     });
 
     it('returns 204', async () => {
-      const sendStub = sinon.stub(status, 'send');
-      destroyStub.returns(true);
+      try {
+        const sendStub = sinon.stub(status, 'send');
+        destroyStub.returns(true);
 
-      await helpers.delete(id, res, model);
-      
-      sinon.assert.calledOnce(destroyStub);
-      sinon.assert.calledWith(destroyStub, { where: { id } });
-      sinon.assert.calledOnce(statusStub);
-      sinon.assert.calledWith(statusStub, 204);
-      sinon.assert.calledOnce(sendStub);
+        await helpers.delete(id, res, model);
+        
+        sinon.assert.calledOnce(modelStub);
+        sinon.assert.calledWith(modelStub, model);
+        sinon.assert.calledOnce(destroyStub);
+        sinon.assert.calledWith(destroyStub, { where: { id } });
+        sinon.assert.calledOnce(statusStub);
+        sinon.assert.calledWith(statusStub, 204);
+        sinon.assert.calledOnce(sendStub);        
+      } catch(err) {
+        throw new Error(err);
+      }
     });
 
     it('returns 404', async () => {
-      destroyStub.returns(undefined);
+      try {
+        destroyStub.returns(undefined);
 
-      await helpers.delete(id, res, model);
-      
-      sinon.assert.calledOnce(statusStub);
-      sinon.assert.calledWith(statusStub, 404);
-      sinon.assert.calledOnce(jsonStub);
-      sinon.assert.calledWith(jsonStub, { error: `The ${model} could not be found.` });
+        await helpers.delete(id, res, model);
+        
+        sinon.assert.calledOnce(statusStub);
+        sinon.assert.calledWith(statusStub, 404);
+        sinon.assert.calledOnce(jsonStub);
+        sinon.assert.calledWith(jsonStub, { error: `The ${model} could not be found.` });        
+      } catch(err) {
+        throw new Error(err);
+      }
     });
 
     it('returns 500', async () => {
-      destroyStub.throws(err);
+      try {
+        destroyStub.throws(err);
 
-      await helpers.delete(id, res, model);
-      
-      sinon.assert.calledOnce(statusStub);
-      sinon.assert.calledWith(statusStub, 500);
-      sinon.assert.calledOnce(jsonStub);
-      sinon.assert.calledWith(jsonStub, {error: err.errors.map(e => e.message)});
+        await helpers.delete(id, res, model);
+        
+        sinon.assert.calledOnce(statusStub);
+        sinon.assert.calledWith(statusStub, 500);
+        sinon.assert.calledOnce(jsonStub);
+        sinon.assert.calledWith(jsonStub, {error: err.errors.map(e => e.message)});        
+      } catch(err) {
+        throw new Error(err);
+      }
     });
   });
 });
