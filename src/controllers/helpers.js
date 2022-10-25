@@ -47,7 +47,7 @@ exports.create = async (data, res, model) => {
 
     res.status(201).json(response);
   } catch (err) {
-    res.status(500).json({ error: err.errors.map((e) => e.message) });
+    res.status(500).json({ error: err.errors.map(e => e.message) });
   };
 };
 
@@ -60,7 +60,7 @@ exports.readAll = async (res, model) => {
 
     res.status(200).json(response);
   } catch (err) {
-    res.status(500).json({ error: err.errors.map((e) => e.message) });
+    res.status(500).json({ error: err.errors.map(e => e.message) });
   };
 };
 
@@ -77,7 +77,7 @@ exports.readById = async (id, res, model) => {
       res.status(200).json(response);
     };
   } catch (err) {
-    res.status(500).json({ error: err.errors.map((e) => e.message) });
+    res.status(500).json({ error: err.errors.map(e => e.message) });
   };
 };
 
@@ -93,7 +93,7 @@ exports.update = async (data, id, res, model) => {
       res.status(200).send();
     };
   } catch (err) {
-    res.status(500).json({ error: err.errors.map((e) => e.message) });
+    res.status(500).json({ error: err.errors.map(e => e.message) });
   };
 };
 
@@ -109,6 +109,6 @@ exports.delete = async (id, res, model) => {
       res.status(204).send();
     };
   } catch (err) {
-    res.status(500).json({ error: err.errors.map((e) => e.message) });
+    res.status(500).json({ error: err.errors.map(e => e.message) });
   };
 };

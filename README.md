@@ -39,6 +39,7 @@ Created as part of the Manchester Codes full-stack web development boot-camp.
 - [Supertest](https://www.npmjs.com/package/supertest)
 - [Faker](https://www.npmjs.com/package/@faker-js/faker)
 - [Sinon](https://www.npmjs.com/package/sinon)
+- [Rewrire](https://www.npmjs.com/package/rewire)
 
 ## Setup
 
@@ -102,6 +103,10 @@ $ npm run unit-test
 ```
 ## Routes
 
+<sub>? In Schema represents optional field</sub>
+
+### /readers
+
 | Method | Route | Description | Schema (JSON) |
 | --- | --- | --- | --- |
 | POST | /readers | Creates new reader | <pre>{<br />  "name": STRING,<br />  "email": STRING,<br />  "password": STRING<br />} |
@@ -109,23 +114,36 @@ $ npm run unit-test
 | GET | /readers/{readerId} | Returns reader of specified ID | N/A |
 | PATCH | /readers/{readerId} | Updates reader with specified ID | <pre>{<br />  "name"?: STRING,<br />  "email"?: STRING,<br />  "password"?: STRING<br />} |
 | DELETE | /readers/{readerId} | Deletes reader with specified ID | N/A |
+
+### /books
+
+| Method | Route | Description | Schema (JSON) |
+| --- | --- | --- | --- |
 | POST | /books | Creates new book | <pre>{<br />  "title": STRING,<br />  "ISBN"?: STRING,<br />  "authorId": INTEGER,<br />  "genreId"?: INTEGER<br />} |
 | GET | /books | Returns all books and associated genres and authors | N/A |
 | GET | /books/{bookId} | Returns book of specified ID and associated genre and author | N/A |
 | PATCH | /books/{bookId} | Updates book with specified ID | <pre>{<br />  "title"?: STRING,<br />  "ISBN"?: STRING,<br />  "authorId"?: INTEGER,<br />  "genreId"?: INTEGER<br />} |
 | DELETE | /books/{bookId} | Deletes book with specified ID | N/A |
+
+### /authors
+
+| Method | Route | Description | Schema (JSON) |
+| --- | --- | --- | --- |
 | POST | /authors | Creates new author | <pre>{<br />  "author": STRING<br />} |
 | GET | /authors | Returns all authors and associated books and genres | N/A |
 | GET | /authors/{authorId} | Returns author of specified ID and associated books and genres | N/A |
 | PATCH | /authors/{authorId} | Updates author with specified ID | <pre>{<br />  "author": STRING<br />} |
 | DELETE | /authors/{authorId} | Deletes author with specified ID | N/A |
+
+### /genres
+
+| Method | Route | Description | Schema (JSON) |
+| --- | --- | --- | --- |
 | POST | /genres | Creates new genre | <pre>{<br />  "genre": STRING<br />} |
 | GET | /genres | Returns all genres and associated books and authors | N/A |
 | GET | /genres/{genreId} | Returns genre of specified ID and associated books and authors | N/A |
 | PATCH | /genres/{genreId} | Updates genre with specified ID | <pre>{<br />  "genre": STRING<br />} |
 | DELETE | /genres/{genreId} | Deletes genre with specified ID | N/A |
-
-<sub>? In Schema represents optional field</sub>
 
 ## Attribution
 
