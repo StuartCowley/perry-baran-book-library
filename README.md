@@ -2,11 +2,13 @@
 
 An Express.js API that interacts with a sequelize database via CRUD requests to store and interact with reader and book information.
 
-Sequelize uses MySQL for tests and Postgre for production.
+Sequelize uses MySQL for tests and Postgres for production.
 
 Implements Test-Driven development using Mocha and Chai.
 
 Created as part of the Manchester Codes full-stack web development boot-camp.
+
+App hosted on [Render](https://book-library-f9gi.onrender.com).
 
 ## Table of Contents
 
@@ -15,12 +17,6 @@ Created as part of the Manchester Codes full-stack web development boot-camp.
 3. [Routes](#routes)
 4. [Commands](#commands)
 5. [Attribution](#attribution)
-
-## Todo
-
-- Add automatic tests on push/pull requests to main
-- Deploy app to Render
-
 
 ## Dependencies
 
