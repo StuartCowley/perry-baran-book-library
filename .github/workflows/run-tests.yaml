@@ -1,4 +1,4 @@
-name: Integration Tests
+name: Unit Tests
 
 on:
   push:
@@ -9,39 +9,12 @@ on:
       - main
 
 jobs:
-  integration-test:
-    env:
-      DATABASE_URL: postgresql://postgres:postgres@localhost:5432
-      DB_HOST: localhost
-      DB_USER: postgres
-      DB_PASSWORD: postgres
-      DB_PORT: 5432
-      DB_NAME: book_library
-    services:
-      postgres:
-        image: postgres
-        env:
-          POSTGRES_PASSWORD: postgres
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          - 5432:5432
+  unit-test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
         with:
           node-version: '17'
-      - name: Install PostgreSQL client
-        run: |
-          sudo apt-get update
-          sudo apt-get install --yes postgresql-client
-      - name: Create Database
-        run: psql $DATABASE_URL -c 'CREATE DATABASE book_library;'
-      - name: Install Dependencies
-        run: npm ci
-      - name: Run Integration Tests
-        run: npm test
+      - run: npm ci
+      - run: npm run unit-test
