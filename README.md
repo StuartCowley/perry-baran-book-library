@@ -8,7 +8,7 @@ Implements Test-Driven development using Mocha and Chai.
 
 Created as part of the Manchester Codes full-stack web development boot-camp.
 
-App hosted on [Render](https://book-library-f9gi.onrender.com).
+App hosted on [Render](https://render.com/) at https://book-library-f9gi.onrender.com.
 
 ## Table of Contents
 
