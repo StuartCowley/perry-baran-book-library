@@ -29,8 +29,7 @@ exports.readById = async (req, res) => {
 };
 
 exports.update = async (req, res) => {
-  const { readerId } = req.params;
-  const { body } = req;
+  const { body, params: { readerId } } = req;
 
   try {
     await helpers.update(body, readerId, res, 'reader');
