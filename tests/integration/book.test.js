@@ -8,6 +8,7 @@ describe('/books', () => {
 
   before(async () => {
     try {
+      await Author.sequelize.sync();
       await Book.sequelize.sync();
     } catch (err) {
       throw new Error(err);
@@ -24,6 +25,7 @@ describe('/books', () => {
 
   afterEach(async () => {
     try {
+      await Author.destroy({ where: {} });
       await Book.destroy({ where: {} });
     } catch (err) {
       throw new Error(err);
@@ -171,7 +173,7 @@ describe('/books', () => {
           }
         });
 
-        it('cannot be a numeric string not containing 11 or 12 numbers', async () => {
+        it('cannot be a numeric string containing 11 or 12 numbers', async () => {
           try {
             const data1 = bookFactory({ ISBN: '97845678901', authorId: author.id});
             const data2 = bookFactory({ ISBN: '978456789012', authorId: author.id});

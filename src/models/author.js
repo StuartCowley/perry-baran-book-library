@@ -10,11 +10,11 @@ module.exports = (sequelize, DataTypes) => {
       allowEmpty: false,
       validate: {
         notNull: {
-          args: [true],
+          args: true,
           msg: 'Must provide an author',
         },
         notEmpty: {
-          args: [true],
+          args: true,
           msg: 'The author cannot be empty',
         }
       },

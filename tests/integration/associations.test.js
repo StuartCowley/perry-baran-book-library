@@ -10,6 +10,7 @@ describe('associations', () => {
 
   before(async () => {
     try {
+      await Author.sequelize.sync();
       await Book.sequelize.sync();
       await Genre.sequelize.sync();          
     } catch (err) {
@@ -41,6 +42,7 @@ describe('associations', () => {
 
   afterEach(async () => {
     try {
+      await Author.destroy({ where: {} });
       await Book.destroy({ where: {} });
       await Genre.destroy({ where: {} });          
     } catch (err) {

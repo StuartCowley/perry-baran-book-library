@@ -2,7 +2,7 @@
 
 An Express.js API that interacts with a sequelize database via CRUD requests to store and interact with reader and book information.
 
-Sequelize uses MySQL for tests and Postgres for production.
+Sequelize uses MySQL dialect for tests and Postgres for production.
 
 Implements Test-Driven development using Mocha and Chai.
 
@@ -14,8 +14,8 @@ App hosted on [Render](https://render.com/) at https://book-library-f9gi.onrende
 
 1. [Dependencies](#dependencies)
 2. [Setup](#setup)
-3. [Routes](#routes)
-4. [Commands](#commands)
+3. [Commands](#commands)
+4. [Routes](#routes) 
 5. [Attribution](#attribution)
 
 ## Dependencies
@@ -37,7 +37,6 @@ App hosted on [Render](https://render.com/) at https://book-library-f9gi.onrende
 - [Rewrire](https://www.npmjs.com/package/rewire)
 
 ## Setup
-
 
 ### Install Dependencies
 
@@ -91,11 +90,12 @@ To run all tests use:
 $ npm test
 ```
 
-To just run unit tests use:
+To only run unit tests use:
 
 ```
 $ npm run unit-test
 ```
+
 ## Routes
 
 <sub>? In Schema represents optional field</sub>

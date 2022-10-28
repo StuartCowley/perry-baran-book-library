@@ -10,11 +10,11 @@ module.exports = (sequelize, DataTypes) => {
       allowEmpty: false,
       validate: {
         notNull: {
-          args: [true],
+          args: true,
           msg: 'Must provide a genre',
         },
         notEmpty: {
-          args: [true],
+          args: true,
           msg: 'The genre cannot be empty',
         }
       },

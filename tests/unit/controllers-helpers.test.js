@@ -5,7 +5,7 @@ const helpers = rewire('../../src/controllers/helpers');
 describe('controller helpers', () => {
   const data = {};
   const id = 0;
-  const model = 'model';
+  const modelString = 'model';
   const Model = {
     create: () => {},
     findAll: () => {},
@@ -55,10 +55,10 @@ describe('controller helpers', () => {
       try {
         createStub.returns(response);
 
-        await helpers.create(data, res, model);
+        await helpers.create(data, res, modelString);
         
         sinon.assert.calledOnce(modelStub);
-        sinon.assert.calledWith(modelStub, model);
+        sinon.assert.calledWith(modelStub, modelString);
         sinon.assert.calledOnce(createStub);
         sinon.assert.calledWith(createStub, data);
         sinon.assert.calledOnce(statusStub);
@@ -74,7 +74,7 @@ describe('controller helpers', () => {
       try {
         createStub.throws(err);
 
-        await helpers.create(data, res, model);
+        await helpers.create(data, res, modelString);
 
         sinon.assert.calledOnce(statusStub);
         sinon.assert.calledWith(statusStub, 500);
@@ -108,12 +108,12 @@ describe('controller helpers', () => {
         try {
           findAllStub.returns(response);
 
-          await helpers.readAll(res, model);
+          await helpers.readAll(res, modelString);
 
           sinon.assert.calledOnce(modelStub);
-          sinon.assert.calledWith(modelStub, model);
+          sinon.assert.calledWith(modelStub, modelString);
           sinon.assert.calledOnce(optionsStub);
-          sinon.assert.calledWith(optionsStub, model);        
+          sinon.assert.calledWith(optionsStub, modelString);        
           sinon.assert.calledOnce(findAllStub);
           sinon.assert.calledWith(findAllStub, options);
           sinon.assert.calledOnce(statusStub);
@@ -129,7 +129,7 @@ describe('controller helpers', () => {
         try {
           findAllStub.throws(err);
 
-          await helpers.readAll(res, model);
+          await helpers.readAll(res, modelString);
 
           sinon.assert.calledOnce(statusStub);
           sinon.assert.calledWith(statusStub, 500);
@@ -152,12 +152,12 @@ describe('controller helpers', () => {
         try {
           findByPk.returns(response);
 
-          await helpers.readById(id, res, model);
+          await helpers.readById(id, res, modelString);
 
           sinon.assert.calledOnce(modelStub);
-          sinon.assert.calledWith(modelStub, model);
+          sinon.assert.calledWith(modelStub, modelString);
           sinon.assert.calledOnce(optionsStub);
-          sinon.assert.calledWith(optionsStub, model);
+          sinon.assert.calledWith(optionsStub, modelString);
           sinon.assert.calledOnce(findByPk);
           sinon.assert.calledWith(findByPk, id, options);
           sinon.assert.calledOnce(statusStub);
@@ -173,12 +173,12 @@ describe('controller helpers', () => {
         try {
           findByPk.returns(undefined);
 
-          await helpers.readById(id, res, model);
+          await helpers.readById(id, res, modelString);
 
           sinon.assert.calledOnce(statusStub);
           sinon.assert.calledWith(statusStub, 404);
           sinon.assert.calledOnce(jsonStub);
-          sinon.assert.calledWith(jsonStub, { error: `The ${model} could not be found.` });        
+          sinon.assert.calledWith(jsonStub, { error: `The ${modelString} could not be found.` });        
         } catch(err) {
           throw new Error(err);
         }
@@ -188,7 +188,7 @@ describe('controller helpers', () => {
         try {
           findByPk.throws(err);
 
-          await helpers.readById(id, res, model);
+          await helpers.readById(id, res, modelString);
 
           sinon.assert.calledOnce(statusStub);
           sinon.assert.calledWith(statusStub, 500);
@@ -213,10 +213,10 @@ describe('controller helpers', () => {
         const sendStub = sinon.stub(status, 'send');
         updateStub.returns([response]);
 
-        await helpers.update(data, id, res, model);
+        await helpers.update(data, id, res, modelString);
         
         sinon.assert.calledOnce(modelStub);
-        sinon.assert.calledWith(modelStub, model);
+        sinon.assert.calledWith(modelStub, modelString);
         sinon.assert.calledOnce(updateStub);
         sinon.assert.calledWith(updateStub, data, { where: { id } });
         sinon.assert.calledOnce(statusStub);
@@ -231,12 +231,12 @@ describe('controller helpers', () => {
       try {
         updateStub.returns([undefined]);
 
-        await helpers.update(data, id, res, model);
+        await helpers.update(data, id, res, modelString);
         
         sinon.assert.calledOnce(statusStub);
         sinon.assert.calledWith(statusStub, 404);
         sinon.assert.calledOnce(jsonStub);
-        sinon.assert.calledWith(jsonStub, { error: `The ${model} could not be found.` });        
+        sinon.assert.calledWith(jsonStub, { error: `The ${modelString} could not be found.` });        
       } catch(err) {
         throw new Error(err);
       }
@@ -246,7 +246,7 @@ describe('controller helpers', () => {
       try {
         updateStub.throws(err);
 
-        await helpers.update(data, id, res, model);
+        await helpers.update(data, id, res, modelString);
         
         sinon.assert.calledOnce(statusStub);
         sinon.assert.calledWith(statusStub, 500);
@@ -270,10 +270,10 @@ describe('controller helpers', () => {
         const sendStub = sinon.stub(status, 'send');
         destroyStub.returns(true);
 
-        await helpers.delete(id, res, model);
+        await helpers.delete(id, res, modelString);
         
         sinon.assert.calledOnce(modelStub);
-        sinon.assert.calledWith(modelStub, model);
+        sinon.assert.calledWith(modelStub, modelString);
         sinon.assert.calledOnce(destroyStub);
         sinon.assert.calledWith(destroyStub, { where: { id } });
         sinon.assert.calledOnce(statusStub);
@@ -288,12 +288,12 @@ describe('controller helpers', () => {
       try {
         destroyStub.returns(undefined);
 
-        await helpers.delete(id, res, model);
+        await helpers.delete(id, res, modelString);
         
         sinon.assert.calledOnce(statusStub);
         sinon.assert.calledWith(statusStub, 404);
         sinon.assert.calledOnce(jsonStub);
-        sinon.assert.calledWith(jsonStub, { error: `The ${model} could not be found.` });        
+        sinon.assert.calledWith(jsonStub, { error: `The ${modelString} could not be found.` });        
       } catch(err) {
         throw new Error(err);
       }
@@ -303,7 +303,7 @@ describe('controller helpers', () => {
       try {
         destroyStub.throws(err);
 
-        await helpers.delete(id, res, model);
+        await helpers.delete(id, res, modelString);
         
         sinon.assert.calledOnce(statusStub);
         sinon.assert.calledWith(statusStub, 500);

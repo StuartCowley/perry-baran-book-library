@@ -14,7 +14,7 @@ describe('/genres', () => {
 
   afterEach(async () => {
     try {
-    await Genre.destroy({ where: {} });
+      await Genre.destroy({ where: {} });
     } catch (err) {
       throw new Error(err);
     }

@@ -1,8 +1,10 @@
 const helpers = require('./helpers');
 
 exports.create = async (req, res) => {
+  const { body } = req;
+
   try {
-    await helpers.create(req.body, res, 'author');
+    await helpers.create(body, res, 'author');
   } catch (err) {
     throw new Error(err);
   }
@@ -28,9 +30,10 @@ exports.readById = async (req, res) => {
 
 exports.update = async (req, res) => {
   const { authorId } = req.params;
+  const { body } = req;
 
   try {
-    await helpers.update(req.body, authorId, res, 'author');
+    await helpers.update(body, authorId, res, 'author');
   } catch (err) {
     throw new Error(err);
   }

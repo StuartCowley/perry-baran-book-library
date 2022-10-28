@@ -6,11 +6,11 @@ module.exports = (connection, DataTypes) => {
       allowEmpty: false,
       validate: {
         notNull: {
-          args: [true],
+          args: true,
           msg: 'Must provide a name',
         },
         notEmpty: {
-          args: [true],
+          args: true,
           msg: 'The name cannot be empty',
         },
       }
@@ -24,11 +24,11 @@ module.exports = (connection, DataTypes) => {
       },
       validate: {
         notNull: {
-          args: [true],
+          args: true,
           msg: 'Must provide an email',
         },
         isEmail: {
-          args: [true],
+          args: true,
           msg: 'Email must be valid'
         }
       }
@@ -38,7 +38,7 @@ module.exports = (connection, DataTypes) => {
       allowNull: false,
       validate: {
         notNull: {
-          args: [true],
+          args: true,
           msg: 'Must provide a password',
         },
         len: {
