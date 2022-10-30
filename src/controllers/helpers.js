@@ -38,6 +38,15 @@ const getOptions = (model) => {
   }
 };
 
+const errorMessage404 = (model) => { return { error: `The ${model} could not be found.` } };
+
+const errorMessage500 = (err) => {
+  if (Array.isArray(err.errors)) {
+    return { error: err.errors.map(e => e.message) };
+  }
+  return { error: err };
+};
+
 exports.create = async (data, res, model) => {
   const Model = getModel(model);
 
@@ -49,7 +58,7 @@ exports.create = async (data, res, model) => {
 
     res.status(201).json(response);
   } catch (err) {
-    res.status(500).json({ error: err.errors.map(e => e.message) });
+    res.status(500).json(errorMessage500(err));
   }
 };
 
@@ -62,7 +71,7 @@ exports.readAll = async (res, model) => {
 
     res.status(200).json(response);
   } catch (err) {
-    res.status(500).json({ error: err.errors.map(e => e.message) });
+    res.status(500).json(errorMessage500(err));
   }
 };
 
@@ -74,12 +83,12 @@ exports.readById = async (id, res, model) => {
     const response = await Model.findByPk(id, options);
 
     if (!response) {
-      res.status(404).json({ error: `The ${model} could not be found.` });
+      res.status(404).json(errorMessage404(model));
     } else {
       res.status(200).json(response);
     }
   } catch (err) {
-    res.status(500).json({ error: err.errors.map(e => e.message) });
+    res.status(500).json(errorMessage500(err));
   }
 };
 
@@ -89,12 +98,12 @@ exports.update = async (data, id, res, model) => {
   try {
     const [ updatedRows ] = await Model.update(data, { where: { id } });
     if (!updatedRows) {
-      res.status(404).json({ error: `The ${model} could not be found.` })
+      res.status(404).json(errorMessage404(model));
     } else {
       res.status(200).send();
     }
   } catch (err) {
-    res.status(500).json({ error: err.errors.map(e => e.message) });
+    res.status(500).json(errorMessage500(err));
   }
 };
 
@@ -105,11 +114,11 @@ exports.delete = async (id, res, model) => {
     const deletedRows = await Model.destroy({where: { id } });
 
     if (!deletedRows) {
-      res.status(404).json({ error: `The ${model} could not be found.` })
+      res.status(404).json(errorMessage404(model));
     } else {
       res.status(204).send();
     }
   } catch (err) {
-    res.status(500).json({ error: err.errors.map(e => e.message) });
+    res.status(500).json(errorMessage500(err));
   }
 };
