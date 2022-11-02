@@ -1,0 +1,40 @@
+{
+  "name": "book-library",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "pretest": "node scripts/create-database.js test",
+    "test": "NODE_ENV=test mocha tests/**/*.js --exit --recursive --timeout 60000 --file ./tests/test-setup.js",
+    "posttest": "node scripts/drop-database.js",
+    "unit-test": "mocha tests/unit/*.js --exit --recursive",
+    "start": "nodemon -r dotenv/config index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PerryBaran/book-library.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/PerryBaran/book-library/issues"
+  },
+  "homepage": "https://github.com/PerryBaran/book-library#readme",
+  "dependencies": {
+    "express": "^4.18.2",
+    "pg": "^8.8.0",
+    "sequelize": "^6.25.3"
+  },
+  "devDependencies": {
+    "@faker-js/faker": "^7.6.0",
+    "chai": "^4.3.6",
+    "dotenv": "^16.0.3",
+    "mocha": "^10.1.0",
+    "mysql2": "^2.3.3",
+    "nodemon": "^2.0.20",
+    "rewire": "^6.0.0",
+    "sinon": "^14.0.1",
+    "supertest": "^6.3.0"
+  }
+}
